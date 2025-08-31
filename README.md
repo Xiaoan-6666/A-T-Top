@@ -1,3 +1,4 @@
+[Uploading index.html.txt…]()
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -69,16 +70,6 @@
         .animate-fadeIn {
             animation: fadeIn 0.5s ease forwards;
         }
-        
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
     </style>
 </head>
 <body class="bg-gray-50 text-neutral-dark min-h-screen">
@@ -125,8 +116,12 @@
                             </div>
                             <input type="text" id="employeeId" name="employeeId" 
                                 class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
-                                placeholder="请输入您的工号" required>
+                                placeholder="例如：1001" required>
+                            <!-- 工号匹配的姓名预览 -->
+                            <p id="employeeNamePreview" class="absolute left-10 top-full mt-1 text-xs text-success hidden"></p>
                         </div>
+                        <!-- 工号不存在提示 -->
+                        <p id="employeeIdError" class="mt-1 text-xs text-danger hidden">该工号不存在，请核对后重新输入</p>
                     </div>
                     
                     <div>
@@ -137,7 +132,7 @@
                             </div>
                             <input type="password" id="password" name="password" 
                                 class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
-                                placeholder="请输入您的密码" required>
+                                placeholder="默认密码：123456" required>
                             <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
                                 <i class="fa fa-eye-slash"></i>
                             </button>
@@ -167,6 +162,13 @@
                             <i class="fa fa-calendar-check-o text-primary mr-2"></i>今日打卡
                         </h2>
                         
+                        <!-- 时间规则提示 -->
+                        <div class="bg-blue-50 p-3 rounded-lg mb-4 text-sm text-gray-700">
+                            <p class="font-medium"><i class="fa fa-info-circle text-primary mr-1"></i>打卡规则</p>
+                            <p>• 上班：8:30前正常，8:00-8:30迟到，9:00后扣半天工资</p>
+                            <p>• 下班：17:00后正常，17:00前早退</p>
+                        </div>
+                        
                         <div class="text-center py-4 border-y border-gray-100">
                             <p id="currentDate" class="text-gray-500 mb-1"></p>
                             <p id="currentTime" class="text-2xl font-mono font-bold text-gray-800"></p>
@@ -175,24 +177,42 @@
                         <div class="mt-6 space-y-3">
                             <div class="flex justify-between items-center">
                                 <span class="text-gray-600">上班打卡</span>
-                                <span id="morningCheckin" class="text-gray-400">未打卡</span>
+                                <div>
+                                    <span id="morningCheckin" class="text-gray-400">未打卡</span>
+                                    <!-- 上班备注显示 -->
+                                    <p id="morningRemark" class="text-xs mt-1 text-danger hidden"></p>
+                                </div>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-gray-600">下班打卡</span>
-                                <span id="eveningCheckout" class="text-gray-400">未打卡</span>
+                                <div>
+                                    <span id="eveningCheckout" class="text-gray-400">未打卡</span>
+                                    <!-- 下班备注显示 -->
+                                    <p id="eveningRemark" class="text-xs mt-1 text-danger hidden"></p>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="mt-8">
+                        <!-- 新增：员工自定义备注输入框 -->
+                        <div class="mt-6">
+                            <label for="userRemark" class="block text-sm font-medium text-gray-700 mb-1">
+                                <i class="fa fa-pencil text-primary mr-1"></i>打卡备注
+                            </label>
+                            <input type="text" id="userRemark" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all text-sm"
+                                placeholder="请输入备注（如：外勤、请假、加班等）">
+                        </div>
+                        
+                        <!-- 打卡按钮 -->
+                        <div class="mt-4">
                             <button id="checkinBtn" class="w-full bg-success text-white py-3 px-4 rounded-lg font-medium btn-hover flex items-center justify-center">
-                                <i class="fa fa-location-arrow mr-2"></i>
+                                <i class="fa fa-check mr-2"></i>
                                 <span id="checkinBtnText">上班打卡</span>
                             </button>
                         </div>
                         
                         <div class="mt-4 text-center text-sm text-gray-500">
-                            <p>定位服务将用于确认打卡地点</p>
-                            <p id="locationStatus" class="text-warning mt-1"><i class="fa fa-info-circle mr-1"></i>获取位置中...</p>
+                            <p id="checkinTip">点击按钮完成上班签到</p>
                         </div>
                     </div>
                 </div>
@@ -219,13 +239,13 @@
                                 <p id="lateCount" class="text-2xl font-bold text-warning mt-1">1</p>
                             </div>
                             <div class="p-4 bg-red-50 rounded-lg">
-                                <p class="text-gray-500 text-sm">缺勤次数</p>
-                                <p id="absentCount" class="text-2xl font-bold text-danger mt-1">0</p>
+                                <p class="text-gray-500 text-sm">扣薪次数</p>
+                                <p id="salaryDeductCount" class="text-2xl font-bold text-danger mt-1">0</p>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- 最近打卡记录 -->
+                    <!-- 最近打卡记录（含备注列） -->
                     <div class="bg-white rounded-xl p-6 card-shadow">
                         <div class="flex justify-between items-center mb-4">
                             <h2 class="text-xl font-bold text-gray-800 flex items-center">
@@ -240,10 +260,12 @@
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead>
                                     <tr>
+                                        <th class="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">员工姓名</th>
                                         <th class="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">日期</th>
                                         <th class="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">上班时间</th>
                                         <th class="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">下班时间</th>
                                         <th class="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                                        <th class="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">备注</th>
                                     </tr>
                                 </thead>
                                 <tbody id="recentRecords" class="bg-white divide-y divide-gray-200">
@@ -256,7 +278,7 @@
             </div>
         </section>
 
-        <!-- 打卡记录查询界面 (默认隐藏) -->
+        <!-- 打卡记录查询界面 (含备注列) -->
         <section id="recordsSection" class="hidden max-w-4xl mx-auto animate-fadeIn">
             <div class="bg-white rounded-xl p-6 card-shadow mb-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
@@ -284,12 +306,14 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead>
                             <tr>
+                                <th class="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">员工姓名</th>
                                 <th class="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">日期</th>
                                 <th class="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">星期</th>
                                 <th class="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">上班时间</th>
                                 <th class="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">下班时间</th>
                                 <th class="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">工作时长</th>
                                 <th class="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                                <th class="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">备注</th>
                             </tr>
                         </thead>
                         <tbody id="allRecords" class="bg-white divide-y divide-gray-200">
@@ -337,17 +361,62 @@
         </div>
     </div>
 
-    <!-- JavaScript -->
+    <!-- JavaScript：核心逻辑 -->
     <script>
+        // ########################### 核心优化1：120个员工数据（工号-姓名匹配） ###########################
+        const employees = [
+            { id: "1001", name: "张三" }, { id: "1002", name: "李四" }, { id: "1003", name: "王五" },
+            { id: "1004", name: "赵六" }, { id: "1005", name: "孙七" }, { id: "1006", name: "周八" },
+            { id: "1007", name: "吴九" }, { id: "1008", name: "郑十" }, { id: "1009", name: "钱一" },
+            { id: "1010", name: "冯二" }, { id: "1011", name: "陈三" }, { id: "1012", name: "褚四" },
+            { id: "1013", name: "卫五" }, { id: "1014", name: "蒋六" }, { id: "1015", name: "沈七" },
+            { id: "1016", name: "韩八" }, { id: "1017", name: "杨九" }, { id: "1018", name: "朱十" },
+            { id: "1019", name: "秦一" }, { id: "1020", name: "尤二" }, { id: "1021", name: "许三" },
+            { id: "1022", name: "何四" }, { id: "1023", name: "吕五" }, { id: "1024", name: "施六" },
+            { id: "1025", name: "张七" }, { id: "1026", name: "孔八" }, { id: "1027", name: "曹九" },
+            { id: "1028", name: "严十" }, { id: "1029", name: "华一" }, { id: "1030", name: "金二" },
+            { id: "1031", name: "魏三" }, { id: "1032", name: "陶四" }, { id: "1033", name: "姜五" },
+            { id: "1034", name: "戚六" }, { id: "1035", name: "谢七" }, { id: "1036", name: "邹八" },
+            { id: "1037", name: "喻九" }, { id: "1038", name: "柏十" }, { id: "1039", name: "水一" },
+            { id: "1040", name: "窦二" }, { id: "1041", name: "章三" }, { id: "1042", name: "云四" },
+            { id: "1043", name: "苏五" }, { id: "1044", name: "潘六" }, { id: "1045", name: "葛七" },
+            { id: "1046", name: "奚八" }, { id: "1047", name: "范九" }, { id: "1048", name: "彭十" },
+            { id: "1049", name: "郎一" }, { id: "1050", name: "鲁二" }, { id: "1051", name: "韦三" },
+            { id: "1052", name: "昌四" }, { id: "1053", name: "马五" }, { id: "1054", name: "苗六" },
+            { id: "1055", name: "凤七" }, { id: "1056", name: "花八" }, { id: "1057", name: "方九" },
+            { id: "1058", name: "俞十" }, { id: "1059", name: "任二" }, { id: "1060", name: "袁三" },
+            { id: "1061", name: "柳四" }, { id: "1062", name: "酆五" }, { id: "1063", name: "鲍六" },
+            { id: "1064", name: "史七" }, { id: "1065", name: "唐八" }, { id: "1066", name: "费九" },
+            { id: "1067", name: "廉十" }, { id: "1068", name: "岑一" }, { id: "1069", name: "薛二" },
+            { id: "1070", name: "雷三" }, { id: "1071", name: "贺四" }, { id: "1072", name: "倪五" },
+            { id: "1073", name: "汤六" }, { id: "1074", name: "滕七" }, { id: "1075", name: "殷八" },
+            { id: "1076", name: "罗九" }, { id: "1077", name: "毕十" }, { id: "1078", name: "郝一" },
+            { id: "1079", name: "邬二" }, { id: "1080", name: "安三" }, { id: "1081", name: "常四" },
+            { id: "1082", name: "乐五" }, { id: "1083", name: "于六" }, { id: "1084", name: "时七" },
+            { id: "1085", name: "傅八" }, { id: "1086", name: "皮九" }, { id: "1087", name: "卞十" },
+            { id: "1088", name: "齐一" }, { id: "1089", name: "康二" }, { id: "1090", name: "伍三" },
+            { id: "1091", name: "余四" }, { id: "1092", name: "元五" }, { id: "1093", name: "卜六" },
+            { id: "1094", name: "顾七" }, { id: "1095", name: "孟八" }, { id: "1096", name: "平九" },
+            { id: "1097", name: "黄十" }, { id: "1098", name: "和一" }, { id: "1099", name: "穆二" },
+            { id: "1100", name: "萧三" }, { id: "1101", name: "尹四" }, { id: "1102", name: "姚五" },
+            { id: "1103", name: "邵六" }, { id: "1104", name: "湛七" }, { id: "1105", name: "汪八" },
+            { id: "1106", name: "祁九" }, { id: "1107", name: "毛十" }, { id: "1108", name: "禹一" },
+            { id: "1109", name: "狄二" }, { id: "1110", name: "米三" }, { id: "1111", name: "贝四" },
+            { id: "1112", name: "明五" }, { id: "1113", name: "臧六" }, { id: "1114", name: "计七" },
+            { id: "1115", name: "伏八" }, { id: "1116", name: "成九" }, { id: "1117", name: "戴十" },
+            { id: "1118", name: "谈一" }, { id: "1119", name: "宋二" }, { id: "1120", name: "茅三" }
+        ];
+
         // 全局变量
         let currentUser = null;
         let checkinStatus = {
             hasCheckedIn: false,
             hasCheckedOut: false,
             morningTime: null,
-            eveningTime: null
+            eveningTime: null,
+            morningRemark: "", // 时间规则备注（迟到/扣薪等）
+            eveningRemark: ""  // 时间规则备注（早退等）
         };
-        let currentLocation = null;
         let打卡记录 = [];
 
         // DOM元素
@@ -357,15 +426,21 @@
         const loginForm = document.getElementById('loginForm');
         const togglePassword = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('password');
+        const employeeIdInput = document.getElementById('employeeId');
+        const employeeNamePreview = document.getElementById('employeeNamePreview');
+        const employeeIdError = document.getElementById('employeeIdError');
         const usernameDisplay = document.getElementById('usernameDisplay');
         const logoutBtn = document.getElementById('logoutBtn');
         const checkinBtn = document.getElementById('checkinBtn');
         const checkinBtnText = document.getElementById('checkinBtnText');
         const morningCheckin = document.getElementById('morningCheckin');
         const eveningCheckout = document.getElementById('eveningCheckout');
+        const morningRemark = document.getElementById('morningRemark');
+        const eveningRemark = document.getElementById('eveningRemark');
+        const userRemarkInput = document.getElementById('userRemark'); // 员工自定义备注
         const currentDateEl = document.getElementById('currentDate');
         const currentTimeEl = document.getElementById('currentTime');
-        const locationStatus = document.getElementById('locationStatus');
+        const checkinTip = document.getElementById('checkinTip');
         const viewAllRecordsBtn = document.getElementById('viewAllRecordsBtn');
         const backToCheckinBtn = document.getElementById('backToCheckinBtn');
         const recentRecordsEl = document.getElementById('recentRecords');
@@ -380,6 +455,9 @@
         const notificationIcon = document.getElementById('notificationIcon');
         const closeNotification = document.getElementById('closeNotification');
         const navbar = document.getElementById('navbar');
+        // 统计元素
+        const lateCountEl = document.getElementById('lateCount');
+        const salaryDeductCountEl = document.getElementById('salaryDeductCount');
 
         // 初始化
         document.addEventListener('DOMContentLoaded', () => {
@@ -390,10 +468,16 @@
             // 初始化月份选择器
             initMonthSelector();
             
-            // 尝试从本地存储加载用户信息
+            // 核心优化2：工号输入实时匹配姓名（输入时预览）
+            employeeIdInput.addEventListener('input', handleEmployeeIdInput);
+            
+            // 加载本地存储的用户信息
             const savedUser = localStorage.getItem('currentUser');
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
+                // 匹配员工姓名
+                const employee = employees.find(emp => emp.id === currentUser.id);
+                if (employee) currentUser.name = employee.name;
                 showCheckinSection();
                 loadCheckinData();
             }
@@ -409,7 +493,7 @@
             exportExcelBtn.addEventListener('click', exportRecords);
             closeNotification.addEventListener('click', hideNotification);
             
-            // 滚动时导航栏效果
+            // 滚动导航效果
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 10) {
                     navbar.classList.add('shadow');
@@ -417,42 +501,60 @@
                     navbar.classList.remove('shadow');
                 }
             });
-            
-            // 获取位置
-            getLocation();
         });
 
-        // 处理登录
+        // ########################### 核心优化3：工号输入实时匹配姓名 ###########################
+        function handleEmployeeIdInput() {
+            const inputId = employeeIdInput.value.trim();
+            if (!inputId) {
+                employeeNamePreview.classList.add('hidden');
+                employeeIdError.classList.add('hidden');
+                return;
+            }
+            
+            // 匹配员工
+            const matchedEmployee = employees.find(emp => emp.id === inputId);
+            if (matchedEmployee) {
+                // 显示匹配的姓名
+                employeeNamePreview.textContent = `匹配员工：${matchedEmployee.name}`;
+                employeeNamePreview.classList.remove('hidden');
+                employeeIdError.classList.add('hidden');
+            } else {
+                // 提示工号不存在
+                employeeNamePreview.classList.add('hidden');
+                employeeIdError.classList.remove('hidden');
+            }
+        }
+
+        // ########################### 核心优化4：登录时验证工号并关联姓名 ###########################
         function handleLogin(e) {
             e.preventDefault();
-            
-            const employeeId = document.getElementById('employeeId').value;
+            const inputId = employeeIdInput.value.trim();
             const password = passwordInput.value;
             
-            // 简单验证 (实际应用中应与后端交互)
-            if (employeeId && password) {
-                // 模拟登录成功
+            // 验证工号是否存在
+            const matchedEmployee = employees.find(emp => emp.id === inputId);
+            if (!matchedEmployee) {
+                employeeIdError.classList.remove('hidden');
+                showNotification('登录失败', '该工号不存在，请核对后重新输入', 'error');
+                return;
+            }
+            
+            // 验证密码（默认密码123456，实际可对接后端修改）
+            if (password && password === '123456') {
                 currentUser = {
-                    id: employeeId,
-                    name: employeeId === 'admin' ? '管理员' : `员工${employeeId}`
+                    id: matchedEmployee.id,
+                    name: matchedEmployee.name // 关联员工姓名
                 };
-                
-                // 保存到本地存储
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                
-                // 显示打卡界面
                 showCheckinSection();
-                
-                // 加载打卡数据
                 loadCheckinData();
-                
-                // 显示通知
-                showNotification('登录成功', `欢迎回来，${currentUser.name}`, 'success');
-                
-                // 重置表单
+                showNotification('登录成功', `欢迎回来，${matchedEmployee.name}`, 'success');
                 loginForm.reset();
+                employeeNamePreview.classList.add('hidden');
+                employeeIdError.classList.add('hidden');
             } else {
-                showNotification('登录失败', '请输入工号和密码', 'error');
+                showNotification('登录失败', '密码错误（默认密码：123456）', 'error');
             }
         }
 
@@ -460,170 +562,269 @@
         function togglePasswordVisibility() {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
-            
-            // 切换图标
             const icon = togglePassword.querySelector('i');
-            if (type === 'password') {
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
+            icon.classList.toggle('fa-eye-slash');
+            icon.classList.toggle('fa-eye');
         }
 
-        // 处理登出
+        // 登出处理
         function handleLogout() {
-            // 清除本地存储
             localStorage.removeItem('currentUser');
             currentUser = null;
-            
-            // 显示登录界面
             loginSection.classList.remove('hidden');
             checkinSection.classList.add('hidden');
             recordsSection.classList.add('hidden');
-            
             showNotification('已退出登录', '您已成功退出系统', 'info');
         }
 
-        // 处理打卡
+        // ########################### 核心优化5：打卡时保存员工自定义备注 ###########################
         function handleCheckin() {
-            if (!currentLocation) {
-                showNotification('打卡失败', '请等待位置获取完成', 'error');
-                getLocation();
-                return;
-            }
-            
             const now = new Date();
             const hours = now.getHours();
-            
+            const minutes = now.getMinutes();
+            const currentTimeStr = formatTime(now);
+            const userRemark = userRemarkInput.value.trim(); // 获取员工自定义备注
+
+            // 上班打卡逻辑
             if (!checkinStatus.hasCheckedIn) {
-                // 上班打卡
+                // 判断上班打卡状态和备注
+                const { status: morningStatus, remark: morningRemarkText } = checkMorningCheckinStatus(hours, minutes);
+                
+                // 更新状态
                 checkinStatus.hasCheckedIn = true;
-                checkinStatus.morningTime = formatTime(now);
+                checkinStatus.morningTime = currentTimeStr;
+                checkinStatus.morningRemark = morningRemarkText;
                 
                 // 更新UI
-                morningCheckin.textContent = checkinStatus.morningTime;
+                morningCheckin.textContent = currentTimeStr;
                 morningCheckin.classList.remove('text-gray-400');
-                morningCheckin.classList.add('text-success');
+                if (morningStatus === 'normal') {
+                    morningCheckin.classList.add('text-success');
+                    morningRemark.classList.add('hidden');
+                } else {
+                    morningCheckin.classList.add('text-warning');
+                    morningRemark.textContent = morningRemarkText;
+                    morningRemark.classList.remove('hidden');
+                }
                 
-                // 更新按钮状态
+                // 切换按钮为下班打卡
                 checkinBtnText.textContent = '下班打卡';
                 checkinBtn.classList.remove('bg-success');
                 checkinBtn.classList.add('bg-primary');
+                checkinTip.textContent = '17:00后点击完成下班签退';
                 
-                // 保存打卡记录
-                saveCheckinRecord();
+                // 保存记录（含员工备注）
+                saveCheckinRecord(userRemark);
                 
-                showNotification('上班打卡成功', `打卡时间: ${checkinStatus.morningTime}`, 'success');
-            } else if (!checkinStatus.hasCheckedOut) {
-                // 下班打卡
+                // 通知（含时间备注和员工备注）
+                const fullRemark = userRemark ? `${morningRemarkText} | 员工备注：${userRemark}` : morningRemarkText;
+                showNotification(
+                    '上班打卡成功', 
+                    `签到时间: ${currentTimeStr} | ${fullRemark}`, 
+                    morningStatus === 'normal' ? 'success' : 'warning'
+                );
+            } 
+            // 下班打卡逻辑
+            else if (!checkinStatus.hasCheckedOut) {
+                // 判断下班打卡状态和备注
+                const { status: eveningStatus, remark: eveningRemarkText } = checkEveningCheckoutStatus(hours, minutes);
+                
+                // 更新状态
                 checkinStatus.hasCheckedOut = true;
-                checkinStatus.eveningTime = formatTime(now);
+                checkinStatus.eveningTime = currentTimeStr;
+                checkinStatus.eveningRemark = eveningRemarkText;
                 
                 // 更新UI
-                eveningCheckout.textContent = checkinStatus.eveningTime;
+                eveningCheckout.textContent = currentTimeStr;
                 eveningCheckout.classList.remove('text-gray-400');
-                eveningCheckout.classList.add('text-success');
+                if (eveningStatus === 'normal') {
+                    eveningCheckout.classList.add('text-success');
+                    eveningRemark.classList.add('hidden');
+                } else {
+                    eveningCheckout.classList.add('text-danger');
+                    eveningRemark.textContent = eveningRemarkText;
+                    eveningRemark.classList.remove('hidden');
+                }
                 
-                // 更新按钮状态
+                // 禁用按钮
                 checkinBtnText.textContent = '今日已完成打卡';
                 checkinBtn.disabled = true;
                 checkinBtn.classList.remove('bg-primary');
                 checkinBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
                 checkinBtn.classList.remove('btn-hover');
+                checkinTip.textContent = '今日打卡已完成，明天见！';
                 
-                // 保存打卡记录
-                saveCheckinRecord();
+                // 保存记录（含员工备注）
+                saveCheckinRecord(userRemark);
                 
                 // 计算工作时长
                 const morning = new Date(now.toDateString() + ' ' + checkinStatus.morningTime);
                 const evening = new Date(now.toDateString() + ' ' + checkinStatus.eveningTime);
                 const hoursWorked = ((evening - morning) / (1000 * 60 * 60)).toFixed(1);
                 
-                showNotification('下班打卡成功', `打卡时间: ${checkinStatus.eveningTime}，工作时长: ${hoursWorked}小时`, 'success');
+                // 通知（含所有备注）
+                const fullRemark = userRemark ? `${eveningRemarkText} | 员工备注：${userRemark}` : eveningRemarkText;
+                showNotification(
+                    '下班打卡成功', 
+                    `签退时间: ${currentTimeStr} | 工作时长: ${hoursWorked}小时 | ${fullRemark}`, 
+                    eveningStatus === 'normal' ? 'success' : 'error'
+                );
             }
         }
 
-        // 保存打卡记录
-        function saveCheckinRecord() {
+        // 辅助：判断上班打卡状态（8:30前正常，8:00-8:30迟到，9:00后扣半天工资）
+        function checkMorningCheckinStatus(hours, minutes) {
+            const totalMinutes = hours * 60 + minutes;
+            const normalEnd = 8 * 60 + 30; // 8:30（正常截止）
+            const lateEnd = 9 * 60;        // 9:00（扣薪截止）
+            
+            if (totalMinutes <= normalEnd) {
+                return { status: 'normal', remark: '正常打卡' };
+            } else if (totalMinutes <= lateEnd) {
+                const lateMinutes = totalMinutes - normalEnd;
+                return { status: 'late', remark: `迟到${lateMinutes}分钟` };
+            } else {
+                return { status: 'seriousLate', remark: '严重迟到，扣半天工资' };
+            }
+        }
+
+        // 辅助：判断下班打卡状态（17:00后正常，之前早退）
+        function checkEveningCheckoutStatus(hours, minutes) {
+            const totalMinutes = hours * 60 + minutes;
+            const normalStart = 17 * 60; // 17:00（正常开始）
+            
+            if (totalMinutes >= normalStart) {
+                return { status: 'normal', remark: '正常打卡' };
+            } else {
+                const earlyMinutes = normalStart - totalMinutes;
+                return { status: 'earlyLeave', remark: `早退${earlyMinutes}分钟` };
+            }
+        }
+
+        // ########################### 核心优化6：保存打卡记录时包含员工备注 ###########################
+        function saveCheckinRecord(userRemark) {
             const today = formatDate(new Date(), true);
-            let record =打卡记录.find(r => r.date === today);
+            let record =打卡记录.find(r => r.date === today && r.employeeId === currentUser.id);
+            
+            // 合并备注：时间规则备注 + 员工自定义备注
+            const timeRemark = `${checkinStatus.morningRemark || ''} ${checkinStatus.eveningRemark || ''}`.trim();
+            const fullRemark = userRemark ? `${timeRemark ? timeRemark + ' | ' : ''}员工备注：${userRemark}` : timeRemark || '无';
             
             if (!record) {
                 record = {
+                    employeeId: currentUser.id,
+                    employeeName: currentUser.name, // 记录员工姓名
                     date: today,
                     weekday: getWeekday(new Date()),
                     morning: checkinStatus.morningTime || '',
                     evening: checkinStatus.eveningTime || '',
-                    status: checkinStatus.hasCheckedIn && checkinStatus.hasCheckedOut ? '正常' : 
-                            checkinStatus.hasCheckedIn ? '已上班' : '未打卡'
+                    remark: fullRemark, // 保存完整备注
+                    status: getRecordStatus()
                 };
                 打卡记录.push(record);
             } else {
                 record.morning = checkinStatus.morningTime || record.morning;
                 record.evening = checkinStatus.eveningTime || record.evening;
-                record.status = checkinStatus.hasCheckedIn && checkinStatus.hasCheckedOut ? '正常' : 
-                                checkinStatus.hasCheckedIn ? '已上班' : '未打卡';
+                record.remark = fullRemark; // 更新完整备注
+                record.status = getRecordStatus();
             }
             
             // 保存到本地存储
-            localStorage.setItem('checkinRecords_' + currentUser.id, JSON.stringify(打卡记录));
+            localStorage.setItem('checkinRecords', JSON.stringify(打卡记录));
             
-            // 更新记录列表
+            // 更新列表和统计
             updateRecentRecords();
             loadAllRecords();
             updateStats();
         }
 
-        // 加载打卡数据
+        // 辅助：获取打卡记录的整体状态
+        function getRecordStatus() {
+            if (checkinStatus.hasCheckedIn && checkinStatus.hasCheckedOut) {
+                return checkinStatus.morningRemark.includes('扣半天工资') 
+                    ? '严重迟到' 
+                    : checkinStatus.eveningRemark.includes('早退') 
+                        ? '早退' 
+                        : checkinStatus.morningRemark.includes('迟到') 
+                            ? '迟到' 
+                            : '正常';
+            } else if (checkinStatus.hasCheckedIn) {
+                return '已上班';
+            } else {
+                return '未打卡';
+            }
+        }
+
+        // 加载打卡数据（含员工姓名和备注）
         function loadCheckinData() {
-            // 更新用户名
             usernameDisplay.textContent = currentUser.name;
             
-            // 从本地存储加载打卡记录
-            const savedRecords = localStorage.getItem('checkinRecords_' + currentUser.id);
+            // 加载本地记录
+            const savedRecords = localStorage.getItem('checkinRecords');
             if (savedRecords) {
                 打卡记录 = JSON.parse(savedRecords);
             } else {
-                // 生成一些模拟数据
-                打卡记录 = generateMockRecords();
-                localStorage.setItem('checkinRecords_' + currentUser.id, JSON.stringify(打卡记录));
+                打卡记录 = [];
             }
             
-            // 检查今日打卡状态
+            // 恢复今日状态
             const today = formatDate(new Date(), true);
-            const todayRecord =打卡记录.find(r => r.date === today);
-            
+            const todayRecord =打卡记录.find(r => r.date === today && r.employeeId === currentUser.id);
             if (todayRecord) {
                 checkinStatus.hasCheckedIn = !!todayRecord.morning;
                 checkinStatus.hasCheckedOut = !!todayRecord.evening;
                 checkinStatus.morningTime = todayRecord.morning;
                 checkinStatus.eveningTime = todayRecord.evening;
                 
-                // 更新UI
-                morningCheckin.textContent = checkinStatus.morningTime || '未打卡';
-                eveningCheckout.textContent = checkinStatus.eveningTime || '未打卡';
-                
-                if (checkinStatus.hasCheckedIn) {
-                    morningCheckin.classList.remove('text-gray-400');
-                    morningCheckin.classList.add('text-success');
+                // 解析时间规则备注
+                if (todayRecord.remark.includes('迟到')) {
+                    checkinStatus.morningRemark = todayRecord.remark.match(/迟到\d+分钟|严重迟到，扣半天工资/)[0];
+                }
+                if (todayRecord.remark.includes('早退')) {
+                    checkinStatus.eveningRemark = todayRecord.remark.match(/早退\d+分钟/)[0];
                 }
                 
-                if (checkinStatus.hasCheckedOut) {
+                // 更新UI
+                morningCheckin.textContent = todayRecord.morning || '未打卡';
+                eveningCheckout.textContent = todayRecord.evening || '未打卡';
+                
+                // 上班状态和备注
+                if (todayRecord.morning) {
+                    morningCheckin.classList.remove('text-gray-400');
+                    if (checkinStatus.morningRemark) {
+                        morningCheckin.classList.add('text-warning');
+                        morningRemark.textContent = checkinStatus.morningRemark;
+                        morningRemark.classList.remove('hidden');
+                    } else {
+                        morningCheckin.classList.add('text-success');
+                    }
+                }
+                
+                // 下班状态和备注
+                if (todayRecord.evening) {
                     eveningCheckout.classList.remove('text-gray-400');
-                    eveningCheckout.classList.add('text-success');
+                    if (checkinStatus.eveningRemark) {
+                        eveningCheckout.classList.add('text-danger');
+                        eveningRemark.textContent = checkinStatus.eveningRemark;
+                        eveningRemark.classList.remove('hidden');
+                    } else {
+                        eveningCheckout.classList.add('text-success');
+                    }
+                }
+                
+                // 恢复员工备注
+                const userRemarkMatch = todayRecord.remark.match(/员工备注：(.+)/);
+                if (userRemarkMatch) {
+                    userRemarkInput.value = userRemarkMatch[1];
                 }
             }
             
             // 更新按钮状态
             updateCheckinButtonStatus();
             
-            // 更新记录列表
+            // 更新列表和统计
             updateRecentRecords();
             loadAllRecords();
-            
-            // 更新统计数据
             updateStats();
         }
 
@@ -635,119 +836,55 @@
                 checkinBtn.classList.remove('bg-success', 'bg-primary');
                 checkinBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
                 checkinBtn.classList.remove('btn-hover');
+                checkinTip.textContent = '今日打卡已完成，明天见！';
             } else if (checkinStatus.hasCheckedIn) {
                 checkinBtnText.textContent = '下班打卡';
                 checkinBtn.disabled = false;
                 checkinBtn.classList.remove('bg-success', 'bg-gray-400', 'cursor-not-allowed');
                 checkinBtn.classList.add('bg-primary');
                 checkinBtn.classList.add('btn-hover');
+                checkinTip.textContent = '17:00后点击完成下班签退';
             } else {
                 checkinBtnText.textContent = '上班打卡';
                 checkinBtn.disabled = false;
                 checkinBtn.classList.remove('bg-primary', 'bg-gray-400', 'cursor-not-allowed');
                 checkinBtn.classList.add('bg-success');
                 checkinBtn.classList.add('btn-hover');
+                checkinTip.textContent = '点击按钮完成上班签到';
             }
         }
 
-        // 更新最近打卡记录
+        // ########################### 核心优化7：最近记录显示员工姓名和备注 ###########################
         function updateRecentRecords() {
-            // 清空列表
             recentRecordsEl.innerHTML = '';
+            // 筛选当前员工的记录，按日期倒序，取最近5条
+            const userRecords = [...打卡记录]
+                .filter(r => r.employeeId === currentUser.id)
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5);
             
-            // 按日期排序，取最近5条
-            const sortedRecords = [...打卡记录].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
-            
-            if (sortedRecords.length === 0) {
+            if (userRecords.length === 0) {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td colspan="4" class="px-3 py-4 text-center text-gray-500">暂无打卡记录</td>
+                    <td colspan="6" class="px-3 py-4 text-center text-gray-500">暂无打卡记录</td>
                 `;
                 recentRecordsEl.appendChild(row);
                 return;
             }
             
-            // 添加记录
-            sortedRecords.forEach(record => {
+            userRecords.forEach(record => {
                 const row = document.createElement('tr');
-                
-                // 确定状态样式
+                // 状态样式
                 let statusClass = 'text-gray-500';
                 let statusText = '未完成';
-                
                 if (record.morning && record.evening) {
-                    statusClass = 'text-success';
-                    statusText = '正常';
-                } else if (record.morning) {
-                    statusClass = 'text-warning';
-                    statusText = '已上班';
-                }
-                
-                row.innerHTML = `
-                    <td class="px-3 py-4 whitespace-nowrap">${record.date}</td>
-                    <td class="px-3 py-4 whitespace-nowrap">${record.morning || '-'}</td>
-                    <td class="px-3 py-4 whitespace-nowrap">${record.evening || '-'}</td>
-                    <td class="px-3 py-4 whitespace-nowrap"><span class="${statusClass}">${statusText}</span></td>
-                `;
-                
-                recentRecordsEl.appendChild(row);
-            });
-        }
-
-        // 加载所有打卡记录
-        function loadAllRecords() {
-            // 清空列表
-            allRecordsEl.innerHTML = '';
-            
-            // 获取选中的月份
-            const selectedMonth = monthSelector.value;
-            const [year, month] = selectedMonth.split('-');
-            
-            // 筛选当月记录
-            const filteredRecords =打卡记录.filter(record => {
-                const recordDate = new Date(record.date);
-                return recordDate.getFullYear() === parseInt(year) && 
-                       recordDate.getMonth() + 1 === parseInt(month);
-            });
-            
-            // 更新计数
-            showingCountEl.textContent = filteredRecords.length;
-            totalCountEl.textContent = filteredRecords.length;
-            
-            if (filteredRecords.length === 0) {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td colspan="6" class="px-3 py-8 text-center text-gray-500">该月份暂无打卡记录</td>
-                `;
-                allRecordsEl.appendChild(row);
-                return;
-            }
-            
-            // 按日期排序
-            filteredRecords.sort((a, b) => new Date(a.date) - new Date(b.date));
-            
-            // 添加记录
-            filteredRecords.forEach(record => {
-                const row = document.createElement('tr');
-                
-                // 计算工作时长
-                let hoursWorked = '-';
-                if (record.morning && record.evening) {
-                    const dateStr = record.date;
-                    const morning = new Date(`${dateStr} ${record.morning}`);
-                    const evening = new Date(`${dateStr} ${record.evening}`);
-                    const hours = ((evening - morning) / (1000 * 60 * 60)).toFixed(1);
-                    hoursWorked = `${hours}小时`;
-                }
-                
-                // 确定状态样式
-                let statusClass = 'text-gray-500';
-                let statusText = '未打卡';
-                
-                if (record.morning && record.evening) {
-                    // 检查是否迟到 (假设9点后打卡为迟到)
-                    const hour = parseInt(record.morning.split(':')[0]);
-                    if (hour > 9) {
+                    if (record.remark.includes('扣半天工资')) {
+                        statusClass = 'text-danger';
+                        statusText = '严重迟到';
+                    } else if (record.remark.includes('早退')) {
+                        statusClass = 'text-danger';
+                        statusText = '早退';
+                    } else if (record.remark.includes('迟到')) {
                         statusClass = 'text-warning';
                         statusText = '迟到';
                     } else {
@@ -760,57 +897,123 @@
                 }
                 
                 row.innerHTML = `
+                    <td class="px-3 py-4 whitespace-nowrap">${record.employeeName}</td>
+                    <td class="px-3 py-4 whitespace-nowrap">${record.date}</td>
+                    <td class="px-3 py-4 whitespace-nowrap">${record.morning || '-'}</td>
+                    <td class="px-3 py-4 whitespace-nowrap">${record.evening || '-'}</td>
+                    <td class="px-3 py-4 whitespace-nowrap"><span class="${statusClass}">${statusText}</span></td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm ${record.remark.includes('扣') || record.remark.includes('早退') ? 'text-danger' : record.remark.includes('迟到') ? 'text-warning' : 'text-gray-600'}">
+                        ${record.remark}
+                    </td>
+                `;
+                recentRecordsEl.appendChild(row);
+            });
+        }
+
+        // ########################### 核心优化8：历史记录显示员工姓名和备注 ###########################
+        function loadAllRecords() {
+            allRecordsEl.innerHTML = '';
+            const selectedMonth = monthSelector.value;
+            const [year, month] = selectedMonth.split('-');
+            // 筛选当前员工当月的记录
+            const userMonthlyRecords = [...打卡记录]
+                .filter(r => {
+                    if (r.employeeId !== currentUser.id) return false;
+                    const recordDate = new Date(r.date);
+                    return recordDate.getFullYear() === parseInt(year) && 
+                           recordDate.getMonth() + 1 === parseInt(month);
+                })
+                .sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            showingCountEl.textContent = userMonthlyRecords.length;
+            totalCountEl.textContent = userMonthlyRecords.length;
+            
+            if (userMonthlyRecords.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="8" class="px-3 py-8 text-center text-gray-500">该月份暂无打卡记录</td>
+                `;
+                allRecordsEl.appendChild(row);
+                return;
+            }
+            
+            userMonthlyRecords.forEach(record => {
+                const row = document.createElement('tr');
+                // 工作时长
+                let hoursWorked = '-';
+                if (record.morning && record.evening) {
+                    const dateStr = record.date;
+                    const morning = new Date(`${dateStr} ${record.morning}`);
+                    const evening = new Date(`${dateStr} ${record.evening}`);
+                    const hours = ((evening - morning) / (1000 * 60 * 60)).toFixed(1);
+                    hoursWorked = `${hours}小时`;
+                }
+                
+                // 状态样式
+                let statusClass = 'text-gray-500';
+                let statusText = '未打卡';
+                if (record.morning && record.evening) {
+                    if (record.remark.includes('扣半天工资')) {
+                        statusClass = 'text-danger';
+                        statusText = '严重迟到';
+                    } else if (record.remark.includes('早退')) {
+                        statusClass = 'text-danger';
+                        statusText = '早退';
+                    } else if (record.remark.includes('迟到')) {
+                        statusClass = 'text-warning';
+                        statusText = '迟到';
+                    } else {
+                        statusClass = 'text-success';
+                        statusText = '正常';
+                    }
+                } else if (record.morning) {
+                    statusClass = 'text-blue-500';
+                    statusText = '已上班';
+                }
+                
+                row.innerHTML = `
+                    <td class="px-3 py-4 whitespace-nowrap">${record.employeeName}</td>
                     <td class="px-3 py-4 whitespace-nowrap">${record.date}</td>
                     <td class="px-3 py-4 whitespace-nowrap">${record.weekday}</td>
                     <td class="px-3 py-4 whitespace-nowrap">${record.morning || '-'}</td>
                     <td class="px-3 py-4 whitespace-nowrap">${record.evening || '-'}</td>
                     <td class="px-3 py-4 whitespace-nowrap">${hoursWorked}</td>
                     <td class="px-3 py-4 whitespace-nowrap"><span class="${statusClass}">${statusText}</span></td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm ${record.remark.includes('扣') || record.remark.includes('早退') ? 'text-danger' : record.remark.includes('迟到') ? 'text-warning' : 'text-gray-600'}">
+                        ${record.remark}
+                    </td>
                 `;
-                
                 allRecordsEl.appendChild(row);
             });
         }
 
-        // 更新统计数据
+        // 更新统计（新增扣薪次数）
         function updateStats() {
             const today = new Date();
             const currentMonth = today.getMonth() + 1;
             const currentYear = today.getFullYear();
-            
-            // 筛选当月记录
-            const monthlyRecords =打卡记录.filter(record => {
-                const recordDate = new Date(record.date);
+            // 筛选当前员工当月的记录
+            const userMonthlyRecords = [...打卡记录].filter(r => {
+                if (r.employeeId !== currentUser.id) return false;
+                const recordDate = new Date(r.date);
                 return recordDate.getFullYear() === currentYear && 
                        recordDate.getMonth() + 1 === currentMonth;
             });
             
-            // 计算当月工作日总数 (简化处理：按22天计算)
+            // 应打卡天数
             const totalDays = 22;
-            
-            // 计算已打卡天数
-            const checkedDays = monthlyRecords.filter(r => r.morning).length;
-            
-            // 计算迟到次数
-            let lateCount = 0;
-            monthlyRecords.forEach(r => {
-                if (r.morning) {
-                    const hour = parseInt(r.morning.split(':')[0]);
-                    if (hour > 9) { // 假设9点后打卡为迟到
-                        lateCount++;
-                    }
-                }
-            });
-            
-            // 计算缺勤次数
-            const workdaysInMonth = getWorkdaysInMonth(currentYear, currentMonth);
-            const absentCount = Math.max(0, workdaysInMonth - checkedDays);
+            // 已打卡天数
+            const checkedDays = userMonthlyRecords.filter(r => r.morning).length;
+            // 迟到次数（含严重迟到）
+            const lateCount = userMonthlyRecords.filter(r => r.remark.includes('迟到')).length;
+            // 扣薪次数（仅严重迟到）
+            const salaryDeductCount = userMonthlyRecords.filter(r => r.remark.includes('扣半天工资')).length;
             
             // 更新UI
             document.getElementById('totalDays').textContent = totalDays;
             document.getElementById('checkedDays').textContent = checkedDays;
-            document.getElementById('lateCount').textContent = lateCount;
-            document.getElementById('absentCount').textContent = absentCount;
+            lateCountEl.textContent = lateCount;
+            salaryDeductCountEl.textContent = salaryDeductCount;
         }
 
         // 初始化月份选择器
@@ -819,142 +1022,82 @@
             const currentYear = today.getFullYear();
             const currentMonth = today.getMonth() + 1;
             
-            // 生成最近6个月的选项
             for (let i = 0; i < 6; i++) {
                 let month = currentMonth - i;
                 let year = currentYear;
-                
                 if (month <= 0) {
                     month += 12;
                     year -= 1;
                 }
-                
                 const monthStr = month.toString().padStart(2, '0');
                 const option = document.createElement('option');
                 option.value = `${year}-${monthStr}`;
                 option.textContent = `${year}年${month}月`;
-                
-                // 设置当前月份为默认选中
-                if (i === 0) {
-                    option.selected = true;
-                }
-                
+                if (i === 0) option.selected = true;
                 monthSelector.appendChild(option);
             }
         }
 
-        // 导出记录
+        // 导出记录（含员工姓名和备注）
         function exportRecords() {
             const selectedMonth = monthSelector.value;
             const [year, month] = selectedMonth.split('-');
-            
-            // 这里只是模拟导出功能
-            showNotification('导出成功', `已将${year}年${month}月的打卡记录导出为Excel`, 'success');
+            showNotification('导出成功', `已将${year}年${month}月的打卡记录（含员工姓名和备注）导出为Excel`, 'success');
         }
 
-        // 显示通知
+        // 通知功能
         function showNotification(title, message, type = 'info') {
             notificationTitle.textContent = title;
             notificationMessage.textContent = message;
-            
-            // 设置图标和颜色
             notificationIcon.innerHTML = '';
+            
             if (type === 'success') {
                 notificationIcon.innerHTML = '<i class="fa fa-check-circle text-success"></i>';
-            } else if (type === 'error') {
-                notificationIcon.innerHTML = '<i class="fa fa-exclamation-circle text-danger"></i>';
             } else if (type === 'warning') {
                 notificationIcon.innerHTML = '<i class="fa fa-exclamation-triangle text-warning"></i>';
+            } else if (type === 'error') {
+                notificationIcon.innerHTML = '<i class="fa fa-exclamation-circle text-danger"></i>';
             } else {
                 notificationIcon.innerHTML = '<i class="fa fa-info-circle text-primary"></i>';
             }
             
-            // 显示通知
             notification.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
-            
-            // 3秒后自动隐藏
-            setTimeout(hideNotification, 3000);
+            setTimeout(hideNotification, 4000); // 延长通知显示时间（含备注内容）
         }
 
-        // 隐藏通知
         function hideNotification() {
             notification.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
         }
 
-        // 显示打卡界面
+        // 页面切换
         function showCheckinSection() {
             loginSection.classList.add('hidden');
             checkinSection.classList.remove('hidden');
             recordsSection.classList.add('hidden');
         }
 
-        // 显示记录界面
         function showRecordsSection() {
             checkinSection.classList.add('hidden');
             recordsSection.classList.remove('hidden');
             loadAllRecords();
         }
 
-        // 更新日期和时间
+        // 时间格式化
         function updateDateTime() {
             const now = new Date();
             currentDateEl.textContent = formatDate(now);
             currentTimeEl.textContent = formatTime(now);
         }
 
-        // 获取位置
-        function getLocation() {
-            if (navigator.geolocation) {
-                locationStatus.innerHTML = '<i class="fa fa-spinner fa-spin mr-1"></i>获取位置中...';
-                
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        currentLocation = {
-                            latitude: position.coords.latitude,
-                            longitude: position.coords.longitude
-                        };
-                        locationStatus.innerHTML = '<i class="fa fa-check-circle text-success mr-1"></i>位置已获取';
-                    },
-                    (error) => {
-                        console.error('获取位置失败:', error);
-                        currentLocation = null;
-                        
-                        switch(error.code) {
-                            case error.PERMISSION_DENIED:
-                                locationStatus.innerHTML = '<i class="fa fa-exclamation-circle text-warning mr-1"></i>请允许位置权限';
-                                break;
-                            case error.POSITION_UNAVAILABLE:
-                                locationStatus.innerHTML = '<i class="fa fa-exclamation-circle text-warning mr-1"></i>位置信息不可用';
-                                break;
-                            case error.TIMEOUT:
-                                locationStatus.innerHTML = '<i class="fa fa-exclamation-circle text-warning mr-1"></i>获取位置超时';
-                                break;
-                            default:
-                                locationStatus.innerHTML = '<i class="fa fa-exclamation-circle text-warning mr-1"></i>获取位置失败';
-                        }
-                    },
-                    { timeout: 10000 }
-                );
-            } else {
-                locationStatus.innerHTML = '<i class="fa fa-exclamation-circle text-warning mr-1"></i>浏览器不支持位置服务';
-            }
-        }
-
-        // 格式化日期
         function formatDate(date, simple = false) {
             const year = date.getFullYear();
             const month = (date.getMonth() + 1).toString().padStart(2, '0');
             const day = date.getDate().toString().padStart(2, '0');
-            
-            if (simple) {
-                return `${year}-${month}-${day}`;
-            }
-            
+            if (simple) return `${year}-${month}-${day}`;
             const weekday = getWeekday(date);
             return `${year}年${month}月${day}日 ${weekday}`;
         }
 
-        // 格式化时间
         function formatTime(date) {
             const hours = date.getHours().toString().padStart(2, '0');
             const minutes = date.getMinutes().toString().padStart(2, '0');
@@ -962,80 +1105,9 @@
             return `${hours}:${minutes}:${seconds}`;
         }
 
-        // 获取星期几
         function getWeekday(date) {
             const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
             return weekdays[date.getDay()];
-        }
-
-        // 计算当月工作日数量 (简化版)
-        function getWorkdaysInMonth(year, month) {
-            // 实际应用中应考虑节假日，这里简化处理
-            const daysInMonth = new Date(year, month, 0).getDate();
-            let workdays = 0;
-            
-            for (let i = 1; i <= daysInMonth; i++) {
-                const day = new Date(year, month - 1, i).getDay();
-                if (day !== 0 && day !== 6) { // 排除周六和周日
-                    workdays++;
-                }
-            }
-            
-            return workdays;
-        }
-
-        // 生成模拟打卡记录
-        function generateMockRecords() {
-            const records = [];
-            const today = new Date();
-            
-            // 生成过去15天的记录
-            for (let i = 15; i >= 0; i--) {
-                const date = new Date();
-                date.setDate(today.getDate() - i);
-                
-                // 跳过周末
-                const day = date.getDay();
-                if (day === 0 || day === 6) continue;
-                
-                const isToday = i === 0;
-                const isYesterday = i === 1;
-                
-                // 随机生成打卡时间
-                let morning = '';
-                let evening = '';
-                
-                // 今天可能还没打卡
-                if (!isToday) {
-                    // 70%的概率正常打卡
-                    if (Math.random() > 0.3) {
-                        // 早上8:30-9:30之间
-                        const morningHour = 8 + Math.floor(Math.random() * 2);
-                        const morningMinute = Math.floor(Math.random() * 60);
-                        morning = `${morningHour.toString().padStart(2, '0')}:${morningMinute.toString().padStart(2, '0')}:00`;
-                        
-                        // 下午17:30-18:30之间
-                        const eveningHour = 17 + Math.floor(Math.random() * 2);
-                        const eveningMinute = Math.floor(Math.random() * 60);
-                        evening = `${eveningHour.toString().padStart(2, '0')}:${eveningMinute.toString().padStart(2, '0')}:00`;
-                    } else if (Math.random() > 0.5) {
-                        // 只打了上班卡
-                        const morningHour = 8 + Math.floor(Math.random() * 2);
-                        const morningMinute = Math.floor(Math.random() * 60);
-                        morning = `${morningHour.toString().padStart(2, '0')}:${morningMinute.toString().padStart(2, '0')}:00`;
-                    }
-                }
-                
-                records.push({
-                    date: formatDate(date, true),
-                    weekday: getWeekday(date),
-                    morning,
-                    evening,
-                    status: morning && evening ? '正常' : morning ? '已上班' : '未打卡'
-                });
-            }
-            
-            return records;
         }
     </script>
 </body>
