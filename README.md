@@ -93,7 +93,7 @@
                             type="text" 
                             id="employeeId" 
                             name="employeeId" 
-                            placeholder="例如: 250001" 
+                            placeholder="e.g. 250001" 
                             class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                             required
                         >
@@ -134,7 +134,7 @@
                 </div>
                 <div id="checkinRecords" class="max-h-40 overflow-y-auto space-y-2">
                     <!-- 打卡记录将在这里动态显示 -->
-                    <p class="text-gray-500 text-sm italic text-center">暂无打卡记录</p>
+                    <p class="text-gray-500 text-sm italic text-center">No check-in records yet</p>
                 </div>
             </div>
         </div>
@@ -144,18 +144,18 @@
             <div class="flex justify-between items-center mb-6">
                 <div>
                     <i class="fa fa-cogs text-primary text-3xl mb-2"></i>
-                    <h2 class="text-xl font-bold text-gray-800">管理员面板</h2>
+                    <h2 class="text-xl font-bold text-gray-800">Administrator Panel</h2>
                 </div>
                 <button id="backToCheckinBtn" class="text-gray-500 hover:text-gray-700 transition-colors">
-                    <i class="fa fa-arrow-left mr-1"></i> 返回打卡
+                    <i class="fa fa-arrow-left mr-1"></i> Back to check-in
                 </button>
             </div>
             
             <!-- 管理员登录表单 -->
             <div id="adminLoginForm" class="space-y-4">
-                <h3 class="font-medium text-gray-800">请输入管理员密码</h3>
+                <h3 class="font-medium text-gray-800">Please enter administrator password</h3>
                 <div>
-                    <label for="adminPassword" class="block text-sm font-medium text-gray-700 mb-1">管理员密码</label>
+                    <label for="adminPassword" class="block text-sm font-medium text-gray-700 mb-1">Administrator Password</label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fa fa-key text-gray-400"></i>
@@ -164,7 +164,7 @@
                             type="password" 
                             id="adminPassword" 
                             name="adminPassword" 
-                            placeholder="输入管理员密码" 
+                            placeholder="Enter administrator password" 
                             class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                             required
                         >
@@ -174,23 +174,23 @@
                     id="doLoginBtn" 
                     class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center"
                 >
-                    <i class="fa fa-sign-in mr-2"></i> 登录
+                    <i class="fa fa-sign-in mr-2"></i> Login
                 </button>
             </div>
             
             <!-- 管理员功能区（默认隐藏） -->
             <div id="adminFunctions" class="hidden space-y-6">
                 <div class="flex justify-between items-center">
-                    <h3 class="font-medium text-gray-800">所有打卡记录</h3>
+                    <h3 class="font-medium text-gray-800">All check-in records</h3>
                     <button id="exportBtn" class="bg-success hover:bg-success/90 text-white text-sm font-medium py-2 px-4 rounded-lg transition-all duration-300 flex items-center">
-                        <i class="fa fa-download mr-2"></i> 导出记录
+                        <i class="fa fa-download mr-2"></i> Export records
                     </button>
                 </div>
                 
                 <!-- 记录筛选 -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label for="filterDate" class="block text-sm font-medium text-gray-700 mb-1">选择日期</label>
+                        <label for="filterDate" class="block text-sm font-medium text-gray-700 mb-1">Select date</label>
                         <input 
                             type="date" 
                             id="filterDate" 
@@ -198,12 +198,12 @@
                         >
                     </div>
                     <div>
-                        <label for="filterEmployee" class="block text-sm font-medium text-gray-700 mb-1">员工筛选</label>
+                        <label for="filterEmployee" class="block text-sm font-medium text-gray-700 mb-1">Filter employee</label>
                         <select 
                             id="filterEmployee" 
                             class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                         >
-                            <option value="all">所有员工</option>
+                            <option value="all">All employees</option>
                             <!-- 员工选项将动态添加 -->
                         </select>
                     </div>
@@ -214,12 +214,12 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead>
                             <tr>
-                                <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">日期</th>
+                                <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                                 <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID No</th>
                                 <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                                <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">上班时间</th>
-                                <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">下班时间</th>
-                                <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                                <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Clock-in time</th>
+                                <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Clock-out time</th>
+                                <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Operation</th>
                             </tr>
                         </thead>
                         <tbody id="adminRecordsTable" class="bg-white divide-y divide-gray-200">
@@ -234,7 +234,7 @@
         <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop flex items-center justify-center z-50 hidden">
             <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 transform transition-all">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-medium text-gray-900">修改打卡时间</h3>
+                    <h3 class="text-lg font-medium text-gray-900">Edit check-in time</h3>
                     <button id="closeModalBtn" class="text-gray-400 hover:text-gray-500">
                         <i class="fa fa-times"></i>
                     </button>
@@ -245,14 +245,14 @@
                     <input type="hidden" id="editRecordType">
                     
                     <div class="mb-4">
-                        <label for="editEmployeeInfo" class="block text-sm font-medium text-gray-700 mb-1">员工信息</label>
+                        <label for="editEmployeeInfo" class="block text-sm font-medium text-gray-700 mb-1">Employee information</label>
                         <div class="p-2 bg-gray-50 rounded border border-gray-200">
                             <span id="editEmployeeInfo" class="text-sm"></span>
                         </div>
                     </div>
                     
                     <div class="mb-4">
-                        <label for="editDate" class="block text-sm font-medium text-gray-700 mb-1">日期</label>
+                        <label for="editDate" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
                         <input 
                             type="date" 
                             id="editDate" 
@@ -262,7 +262,7 @@
                     </div>
                     
                     <div class="mb-6">
-                        <label for="editTime" class="block text-sm font-medium text-gray-700 mb-1">时间</label>
+                        <label for="editTime" class="block text-sm font-medium text-gray-700 mb-1">Time</label>
                         <input 
                             type="time" 
                             id="editTime" 
@@ -278,13 +278,13 @@
                             id="cancelEditBtn"
                             class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-all duration-300"
                         >
-                            取消
+                            Cancel
                         </button>
                         <button 
                             type="submit" 
                             class="flex-1 bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300"
                         >
-                            保存修改
+                            Save changes
                         </button>
                     </div>
                 </form>
@@ -304,8 +304,9 @@
     </div>
 
     <script>
-        // 员工数据库 - 更新了ID No（移除了P_前缀）
+        // 员工数据库 - 包含原有56名员工 + 40个空ID占位符（共96个ID）
         const employees = {
+            // 原有56名员工信息
             '250001': { name: 'Win Phyu Phyu Lwin' },
             '250004': { name: 'Naw Htoo Phwel Phaw' },
             '250007': { name: 'Hein Tun Soe' },
@@ -361,7 +362,49 @@
             '250115': { name: 'ZarNi Min Htet' },
             '250116': { name: 'Pyae Phyo Aung' },
             '250117': { name: 'Ye Lin Htut' },
-            '250118': { name: 'Zaw Lin Htoo' }
+            '250118': { name: 'Zaw Lin Htoo' },
+            
+            // 额外40个空ID占位符（ID号延续原有序列）
+            '250119': { name: '' },
+            '250120': { name: '' },
+            '250121': { name: '' },
+            '250122': { name: '' },
+            '250123': { name: '' },
+            '250124': { name: '' },
+            '250125': { name: '' },
+            '250126': { name: '' },
+            '250127': { name: '' },
+            '250128': { name: '' },
+            '250129': { name: '' },
+            '250130': { name: '' },
+            '250131': { name: '' },
+            '250132': { name: '' },
+            '250133': { name: '' },
+            '250134': { name: '' },
+            '250135': { name: '' },
+            '250136': { name: '' },
+            '250137': { name: '' },
+            '250138': { name: '' },
+            '250139': { name: '' },
+            '250140': { name: '' },
+            '250141': { name: '' },
+            '250142': { name: '' },
+            '250143': { name: '' },
+            '250144': { name: '' },
+            '250145': { name: '' },
+            '250146': { name: '' },
+            '250147': { name: '' },
+            '250148': { name: '' },
+            '250149': { name: '' },
+            '250150': { name: '' },
+            '250151': { name: '' },
+            '250152': { name: '' },
+            '250153': { name: '' },
+            '250154': { name: '' },
+            '250155': { name: '' },
+            '250156': { name: '' },
+            '250157': { name: '' },
+            '250158': { name: '' }
         };
         
         // 管理员密码 (实际应用中应加密存储)
@@ -387,7 +430,7 @@
             // 如果有记录被清理，更新存储
             if (recentRecords.length < savedRecords.length) {
                 localStorage.setItem('checkRecords', JSON.stringify(recentRecords));
-                console.log(`已清理 ${savedRecords.length - recentRecords.length} 条超过${DATA_RETENTION_MONTHS}个月的记录`);
+                console.log(`Cleaned up ${savedRecords.length - recentRecords.length} records older than ${DATA_RETENTION_MONTHS} months`);
             }
             
             return recentRecords;
@@ -475,7 +518,11 @@
             // 填充表单数据
             editRecordIndex.value = recordIndex;
             editRecordType.value = recordType;
-            editEmployeeInfo.textContent = `${record.name} (${record.id}) - ${record.typeText}打卡`;
+            
+            // 处理空名称显示
+            const displayName = record.name || 'Unnamed Employee';
+            const checkTypeText = record.type === 'checkin' ? 'Clock-in' : 'Clock-out';
+            editEmployeeInfo.textContent = `${displayName} (${record.id}) - ${checkTypeText}`;
             
             // 解析日期和时间
             const recordDate = new Date(record.date);
@@ -504,7 +551,7 @@
             const record = checkRecords[recordIndex];
             
             if (!record) {
-                showNotification('错误', '找不到要修改的记录', 'error');
+                showNotification('Error', 'Record to edit not found', 'error');
                 closeEditModal();
                 return;
             }
@@ -514,7 +561,7 @@
             const newTime = editTime.value;
             
             if (!newDate || !newTime) {
-                showNotification('错误', '请填写完整的日期和时间', 'error');
+                showNotification('Error', 'Please fill in complete date and time', 'error');
                 return;
             }
             
@@ -534,17 +581,30 @@
             
             // 关闭弹窗并显示成功消息
             closeEditModal();
-            showNotification('成功', '打卡时间已更新', 'success');
+            showNotification('Success', 'Check-in time has been updated', 'success');
         }
         
         // 初始化员工筛选下拉框
         function initEmployeeFilter() {
-            for (const [id, employee] of Object.entries(employees)) {
+            // 清空现有选项（保留"所有员工"）
+            const allOption = filterEmployeeSelect.querySelector('option[value="all"]');
+            filterEmployeeSelect.innerHTML = '';
+            filterEmployeeSelect.appendChild(allOption);
+            
+            // 按ID号排序添加员工选项
+            const sortedEmployeeIds = Object.keys(employees).sort((a, b) => parseInt(a) - parseInt(b));
+            
+            sortedEmployeeIds.forEach(id => {
+                const employee = employees[id];
                 const option = document.createElement('option');
                 option.value = id;
-                option.textContent = `${employee.name} (${id})`;
+                
+                // 处理空名称显示
+                const displayName = employee.name || `Unnamed (${id})`;
+                option.textContent = `${displayName}`;
+                
                 filterEmployeeSelect.appendChild(option);
-            }
+            });
         }
         
         // 监听ID No输入，实时显示员工信息
@@ -552,8 +612,9 @@
             const empId = this.value.trim();
             
             if (empId && employees[empId]) {
-                // 显示员工信息
-                employeeName.textContent = employees[empId].name;
+                // 显示员工信息（处理空名称）
+                const displayName = employees[empId].name || 'Unnamed Employee';
+                employeeName.textContent = displayName;
                 employeeIdDisplay.textContent = empId;
                 employeeInfo.classList.remove('hidden');
             } else {
@@ -568,17 +629,18 @@
             
             const empId = employeeIdInput.value.trim();
             const checkType = document.querySelector('input[name="checkType"]:checked').value;
-            const checkTypeText = checkType === 'checkin' ? '上班' : '下班';
+            const checkTypeText = checkType === 'checkin' ? 'Clock-in' : 'Clock-out';
+            const checkTypeTextCN = checkType === 'checkin' ? '上班' : '下班'; // 用于中文通知
             
             // 验证ID No
             if (!empId) {
-                showNotification('错误', '请输入ID No', 'error');
+                showNotification('Error', 'Please enter ID No', 'error');
                 return;
             }
             
             // 检查员工是否存在
             if (!employees[empId]) {
-                showNotification('错误', 'ID No不存在', 'error');
+                showNotification('Error', 'ID No does not exist', 'error');
                 return;
             }
             
@@ -592,19 +654,20 @@
             );
             
             if (hasChecked) {
-                showNotification('提示', `您今天已经进行过${checkTypeText}打卡了`, 'warning');
+                showNotification('Notice', `You have already completed ${checkTypeText} today`, 'warning');
                 return;
             }
             
             // 记录打卡信息
             const checkTime = now.toLocaleTimeString();
             const employee = employees[empId];
+            const displayName = employee.name || 'Unnamed Employee';
             
             const newRecord = {
                 id: empId,
-                name: employee.name,
+                name: displayName,
                 type: checkType,
-                typeText: checkTypeText,
+                typeText: checkTypeTextCN, // 用于表格显示
                 time: checkTime,
                 date: now.toISOString()
             };
@@ -619,7 +682,7 @@
             updateAdminRecords();
             
             // 显示成功通知
-            showNotification('成功', `${employee.name} ${checkTypeText}打卡成功`, 'success');
+            showNotification('Success', `${displayName} ${checkTypeText} successful`, 'success');
             
             // 重置表单
             employeeIdInput.value = '';
@@ -648,9 +711,9 @@
             if (password === ADMIN_PASSWORD) {
                 adminLoginForm.classList.add('hidden');
                 adminFunctions.classList.remove('hidden');
-                showNotification('成功', '管理员登录成功', 'success');
+                showNotification('Success', 'Administrator logged in successfully', 'success');
             } else {
-                showNotification('错误', '密码不正确，请重试', 'error');
+                showNotification('Error', 'Incorrect password, please try again', 'error');
             }
         });
         
@@ -663,12 +726,12 @@
             const filteredRecords = getFilteredRecords();
             
             if (filteredRecords.length === 0) {
-                showNotification('提示', '没有可导出的记录', 'warning');
+                showNotification('Notice', 'No records to export', 'warning');
                 return;
             }
             
-            // 准备CSV内容
-            let csvContent = "日期,ID No,Name,上班时间,下班时间\n";
+            // 准备CSV内容（英文表头）
+            let csvContent = "Date,ID No,Name,Clock-in Time,Clock-out Time\n";
             
             // 按员工和日期分组
             const groupedRecords = {};
@@ -681,7 +744,7 @@
                     groupedRecords[key] = {
                         date: date,
                         id: record.id,
-                        name: record.name,
+                        name: record.name || 'Unnamed Employee',
                         checkin: '',
                         checkout: ''
                     };
@@ -696,21 +759,24 @@
             
             // 添加到CSV
             Object.values(groupedRecords).forEach(record => {
-                csvContent += `${record.date},${record.id},${record.name},${record.checkin},${record.checkout}\n`;
+                // 处理CSV中的逗号转义
+                const safeName = record.name.includes(',') ? `"${record.name}"` : record.name;
+                csvContent += `${record.date},${record.id},${safeName},${record.checkin},${record.checkout}\n`;
             });
             
             // 创建并下载CSV文件
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
+            const fileName = `Check-in_Records_${filterDateInput.value || new Date().toLocaleDateString()}.csv`;
             link.setAttribute('href', url);
-            link.setAttribute('download', `打卡记录_${filterDateInput.value || new Date().toLocaleDateString()}.csv`);
+            link.setAttribute('download', fileName);
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             
-            showNotification('成功', `已导出 ${Object.values(groupedRecords).length} 条记录`, 'success');
+            showNotification('Success', `Exported ${Object.values(groupedRecords).length} records`, 'success');
         });
         
         // 获取筛选后的记录
@@ -742,7 +808,7 @@
             );
             
             if (todayRecords.length === 0) {
-                checkRecordsContainer.innerHTML = '<p class="text-gray-500 text-sm italic text-center">暂无打卡记录</p>';
+                checkRecordsContainer.innerHTML = '<p class="text-gray-500 text-sm italic text-center">No check-in records yet</p>';
                 return;
             }
             
@@ -756,17 +822,19 @@
                 const typeIcon = record.type === 'checkin' ? 
                     '<i class="fa fa-sign-in text-success mr-1"></i>' : 
                     '<i class="fa fa-sign-out text-primary mr-1"></i>';
+                const checkTypeText = record.type === 'checkin' ? 'Clock-in' : 'Clock-out';
+                const displayName = record.name || 'Unnamed Employee';
                 
                 recordElement.className = `p-3 rounded border ${typeClass} flex flex-col sm:flex-row justify-between items-start sm:items-center`;
                 
                 recordElement.innerHTML = `
                     <div class="mb-2 sm:mb-0">
-                        <div class="font-medium">${record.name}</div>
+                        <div class="font-medium">${displayName}</div>
                         <div class="text-sm text-gray-500">${record.id}</div>
                     </div>
                     <div class="flex items-center text-sm">
                         ${typeIcon}
-                        <span class="mr-3">${record.typeText}</span>
+                        <span class="mr-3">${checkTypeText}</span>
                         <span class="text-gray-500">${record.time}</span>
                     </div>
                 `;
@@ -784,7 +852,7 @@
                 const emptyRow = document.createElement('tr');
                 emptyRow.innerHTML = `
                     <td colspan="6" class="px-4 py-8 text-center text-gray-500">
-                        没有找到匹配的打卡记录
+                        No matching check-in records found
                     </td>
                 `;
                 adminRecordsTable.appendChild(emptyRow);
@@ -793,9 +861,8 @@
             
             // 按员工和日期分组
             const groupedRecords = {};
-            const recordMap = {}; // 用于存储原始记录索引，便于修改
             
-            filteredRecords.forEach((record, index) => {
+            filteredRecords.forEach(record => {
                 const date = new Date(record.date).toLocaleDateString();
                 const key = `${record.id}-${date}`;
                 
@@ -803,7 +870,7 @@
                     groupedRecords[key] = {
                         date: date,
                         id: record.id,
-                        name: record.name,
+                        name: record.name || 'Unnamed Employee',
                         checkin: '',
                         checkout: '',
                         checkinIndex: -1,
@@ -820,20 +887,23 @@
                 }
             });
             
+            // 按ID号排序显示
+            const sortedGroups = Object.values(groupedRecords).sort((a, b) => parseInt(a.id) - parseInt(b.id));
+            
             // 添加到表格
-            Object.values(groupedRecords).forEach(record => {
+            sortedGroups.forEach(record => {
                 const row = document.createElement('tr');
                 row.className = 'hover:bg-gray-50 transition-colors';
                 
                 // 生成修改按钮
                 const checkinEditBtn = record.checkinIndex !== -1 ? 
                     `<button onclick="openEditModal(${record.checkinIndex}, 'checkin')" class="text-primary hover:text-primary/80 text-sm">
-                        <i class="fa fa-pencil mr-1"></i>修改
+                        <i class="fa fa-pencil mr-1"></i>Edit
                     </button>` : '';
                     
                 const checkoutEditBtn = record.checkoutIndex !== -1 ? 
                     `<button onclick="openEditModal(${record.checkoutIndex}, 'checkout')" class="text-primary hover:text-primary/80 text-sm">
-                        <i class="fa fa-pencil mr-1"></i>修改
+                        <i class="fa fa-pencil mr-1"></i>Edit
                     </button>` : '';
                 
                 row.innerHTML = `
@@ -841,10 +911,10 @@
                     <td class="px-4 py-3 whitespace-nowrap">${record.id}</td>
                     <td class="px-4 py-3 whitespace-nowrap">${record.name}</td>
                     <td class="px-4 py-3 whitespace-nowrap ${record.checkin ? '' : 'text-gray-400'}">
-                        ${record.checkin || '未打卡'}
+                        ${record.checkin || 'Not checked in'}
                     </td>
                     <td class="px-4 py-3 whitespace-nowrap ${record.checkout ? '' : 'text-gray-400'}">
-                        ${record.checkout || '未打卡'}
+                        ${record.checkout || 'Not checked out'}
                     </td>
                     <td class="px-4 py-3 whitespace-nowrap">
                         <div class="flex space-x-2">
@@ -901,4 +971,3 @@
     </script>
 </body>
 </html>
-    
