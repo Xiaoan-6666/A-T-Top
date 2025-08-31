@@ -1,4 +1,3 @@
-[Uploading index.html.txt…]()
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -86,9 +85,9 @@
                     <img src="https://picsum.photos/id/1005/40/40" alt="用户头像" class="w-8 h-8 rounded-full object-cover border-2 border-primary">
                     <span id="usernameDisplay" class="font-medium"></span>
                 </div>
-                <button id="logoutBtn" class="hidden text-gray-600 hover:text-danger transition-colors">
-                    <i class="fa fa-sign-out"></i>
-                    <span class="ml-1 hidden md:inline">退出</span>
+                <button id="changeEmployeeBtn" class="text-gray-600 hover:text-primary transition-colors">
+                    <i class="fa fa-refresh"></i>
+                    <span class="ml-1 hidden md:inline">更换员工</span>
                 </button>
             </div>
         </div>
@@ -96,18 +95,18 @@
 
     <!-- 主内容区 -->
     <main class="container mx-auto px-4 pt-24 pb-16">
-        <!-- 登录界面 -->
-        <section id="loginSection" class="max-w-md mx-auto animate-fadeIn">
+        <!-- 工号输入区域 -->
+        <section id="employeeInputSection" class="max-w-md mx-auto animate-fadeIn">
             <div class="bg-white rounded-xl p-6 md:p-8 card-shadow">
                 <div class="text-center mb-6">
                     <div class="inline-flex items-center justify-center w-16 h-16 rounded-full gradient-bg mb-4">
-                        <i class="fa fa-key text-white text-2xl"></i>
+                        <i class="fa fa-id-card text-white text-2xl"></i>
                     </div>
-                    <h2 class="text-2xl font-bold text-gray-800">员工登录</h2>
-                    <p class="text-gray-500 mt-1">请输入工号和密码登录系统</p>
+                    <h2 class="text-2xl font-bold text-gray-800">员工打卡渠道</h2>
+                    <p class="text-gray-500 mt-1">请输入工号进行打卡操作</p>
                 </div>
                 
-                <form id="loginForm" class="space-y-4">
+                <div class="space-y-4">
                     <div>
                         <label for="employeeId" class="block text-sm font-medium text-gray-700 mb-1">工号</label>
                         <div class="relative">
@@ -124,37 +123,18 @@
                         <p id="employeeIdError" class="mt-1 text-xs text-danger hidden">该工号不存在，请核对后重新输入</p>
                     </div>
                     
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">密码</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fa fa-lock text-gray-400"></i>
-                            </div>
-                            <input type="password" id="password" name="password" 
-                                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
-                                placeholder="默认密码：123456" required>
-                            <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
-                                <i class="fa fa-eye-slash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    
                     <div class="pt-2">
-                        <button type="submit" class="w-full bg-primary text-white py-3 px-4 rounded-lg font-medium btn-hover">
-                            <i class="fa fa-sign-in mr-2"></i>登录系统
+                        <button id="confirmEmployeeBtn" class="w-full bg-primary text-white py-3 px-4 rounded-lg font-medium btn-hover">
+                            <i class="fa fa-check mr-2"></i>确认工号
                         </button>
                     </div>
-                </form>
-                
-                <div class="mt-4 text-center text-gray-500 text-sm">
-                    <p>忘记密码？请联系管理员重置</p>
                 </div>
             </div>
         </section>
 
         <!-- 打卡界面 (默认隐藏) -->
         <section id="checkinSection" class="hidden max-w-4xl mx-auto animate-fadeIn">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- 左侧：打卡卡片 -->
                 <div class="md:col-span-1">
                     <div class="bg-white rounded-xl p-6 card-shadow h-full">
@@ -175,7 +155,7 @@
                         </div>
                         
                         <div class="mt-6 space-y-3">
-                            <div class="flex justify-between items-center">
+                            <div class="flex justify-between justify-between items-center">
                                 <span class="text-gray-600">上班打卡</span>
                                 <div>
                                     <span id="morningCheckin" class="text-gray-400">未打卡</span>
@@ -193,13 +173,13 @@
                             </div>
                         </div>
                         
-                        <!-- 新增：员工自定义备注输入框 -->
+                        <!-- 员工自定义自定义备注输入框 -->
                         <div class="mt-6">
                             <label for="userRemark" class="block text-sm font-medium text-gray-700 mb-1">
                                 <i class="fa fa-pencil text-primary mr-1"></i>打卡备注
                             </label>
                             <input type="text" id="userRemark" 
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all text-sm"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary-primary transition-all text-sm"
                                 placeholder="请输入备注（如：外勤、请假、加班等）">
                         </div>
                         
@@ -207,7 +187,7 @@
                         <div class="mt-4">
                             <button id="checkinBtn" class="w-full bg-success text-white py-3 px-4 rounded-lg font-medium btn-hover flex items-center justify-center">
                                 <i class="fa fa-check mr-2"></i>
-                                <span id="checkinBtnText">上班打卡</span>
+                                <span id="checkinBtnText">上班班打卡</span>
                             </button>
                         </div>
                         
@@ -363,7 +343,7 @@
 
     <!-- JavaScript：核心逻辑 -->
     <script>
-        // ########################### 核心优化1：120个员工数据（工号-姓名匹配） ###########################
+        // 120个员工数据（工号-姓名匹配）
         const employees = [
             { id: "1001", name: "张三" }, { id: "1002", name: "李四" }, { id: "1003", name: "王五" },
             { id: "1004", name: "赵六" }, { id: "1005", name: "孙七" }, { id: "1006", name: "周八" },
@@ -420,17 +400,15 @@
         let打卡记录 = [];
 
         // DOM元素
-        const loginSection = document.getElementById('loginSection');
+        const employeeInputSection = document.getElementById('employeeInputSection');
         const checkinSection = document.getElementById('checkinSection');
         const recordsSection = document.getElementById('recordsSection');
-        const loginForm = document.getElementById('loginForm');
-        const togglePassword = document.getElementById('togglePassword');
-        const passwordInput = document.getElementById('password');
         const employeeIdInput = document.getElementById('employeeId');
         const employeeNamePreview = document.getElementById('employeeNamePreview');
         const employeeIdError = document.getElementById('employeeIdError');
+        const confirmEmployeeBtn = document.getElementById('confirmEmployeeBtn');
+        const changeEmployeeBtn = document.getElementById('changeEmployeeBtn');
         const usernameDisplay = document.getElementById('usernameDisplay');
-        const logoutBtn = document.getElementById('logoutBtn');
         const checkinBtn = document.getElementById('checkinBtn');
         const checkinBtnText = document.getElementById('checkinBtnText');
         const morningCheckin = document.getElementById('morningCheckin');
@@ -468,24 +446,20 @@
             // 初始化月份选择器
             initMonthSelector();
             
-            // 核心优化2：工号输入实时匹配姓名（输入时预览）
-            employeeIdInput.addEventListener('input', handleEmployeeIdInput);
-            
-            // 加载本地存储的用户信息
-            const savedUser = localStorage.getItem('currentUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                // 匹配员工姓名
-                const employee = employees.find(emp => emp.id === currentUser.id);
-                if (employee) currentUser.name = employee.name;
-                showCheckinSection();
-                loadCheckinData();
+            // 加载本地存储的打卡记录
+            const savedRecords = localStorage.getItem('checkinRecords');
+            if (savedRecords) {
+                打卡记录 = JSON.parse(savedRecords);
+            } else {
+                打卡记录 = [];
             }
             
+            // 工号输入实时匹配姓名
+            employeeIdInput.addEventListener('input', handleEmployeeIdInput);
+            
             // 事件监听
-            loginForm.addEventListener('submit', handleLogin);
-            togglePassword.addEventListener('click', togglePasswordVisibility);
-            logoutBtn.addEventListener('click', handleLogout);
+            confirmEmployeeBtn.addEventListener('click', confirmEmployee);
+            changeEmployeeBtn.addEventListener('click', showEmployeeInputSection);
             checkinBtn.addEventListener('click', handleCheckin);
             viewAllRecordsBtn.addEventListener('click', showRecordsSection);
             backToCheckinBtn.addEventListener('click', showCheckinSection);
@@ -503,7 +477,7 @@
             });
         });
 
-        // ########################### 核心优化3：工号输入实时匹配姓名 ###########################
+        // 工号输入实时匹配姓名
         function handleEmployeeIdInput() {
             const inputId = employeeIdInput.value.trim();
             if (!inputId) {
@@ -526,59 +500,48 @@
             }
         }
 
-        // ########################### 核心优化4：登录时验证工号并关联姓名 ###########################
-        function handleLogin(e) {
-            e.preventDefault();
+        // 确认工号
+        function confirmEmployee() {
             const inputId = employeeIdInput.value.trim();
-            const password = passwordInput.value;
             
             // 验证工号是否存在
             const matchedEmployee = employees.find(emp => emp.id === inputId);
             if (!matchedEmployee) {
                 employeeIdError.classList.remove('hidden');
-                showNotification('登录失败', '该工号不存在，请核对后重新输入', 'error');
+                showNotification('验证失败', '该工号不存在，请核对后重新输入', 'error');
                 return;
             }
             
-            // 验证密码（默认密码123456，实际可对接后端修改）
-            if (password && password === '123456') {
-                currentUser = {
-                    id: matchedEmployee.id,
-                    name: matchedEmployee.name // 关联员工姓名
-                };
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                showCheckinSection();
-                loadCheckinData();
-                showNotification('登录成功', `欢迎回来，${matchedEmployee.name}`, 'success');
-                loginForm.reset();
-                employeeNamePreview.classList.add('hidden');
-                employeeIdError.classList.add('hidden');
-            } else {
-                showNotification('登录失败', '密码错误（默认密码：123456）', 'error');
-            }
+            // 设置当前用户
+            currentUser = {
+                id: matchedEmployee.id,
+                name: matchedEmployee.name
+            };
+            
+            // 显示打卡界面
+            showCheckinSection();
+            loadCheckinData();
+            showNotification('验证成功', `欢迎，${matchedEmployee.name}`, 'success');
         }
 
-        // 切换密码可见性
-        function togglePasswordVisibility() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            const icon = togglePassword.querySelector('i');
-            icon.classList.toggle('fa-eye-slash');
-            icon.classList.toggle('fa-eye');
-        }
-
-        // 登出处理
-        function handleLogout() {
-            localStorage.removeItem('currentUser');
-            currentUser = null;
-            loginSection.classList.remove('hidden');
+        // 显示工号输入界面
+        function showEmployeeInputSection() {
+            employeeInputSection.classList.remove('hidden');
             checkinSection.classList.add('hidden');
             recordsSection.classList.add('hidden');
-            showNotification('已退出登录', '您已成功退出系统', 'info');
+            employeeIdInput.value = '';
+            employeeNamePreview.classList.add('hidden');
+            employeeIdError.classList.add('hidden');
+            employeeIdInput.focus();
         }
 
-        // ########################### 核心优化5：打卡时保存员工自定义备注 ###########################
+        // 打卡处理
         function handleCheckin() {
+            if (!currentUser) {
+                showNotification('操作失败', '请先输入并确认工号', 'error');
+                return;
+            }
+            
             const now = new Date();
             const hours = now.getHours();
             const minutes = now.getMinutes();
@@ -701,7 +664,7 @@
             }
         }
 
-        // ########################### 核心优化6：保存打卡记录时包含员工备注 ###########################
+        // 保存打卡记录时包含员工备注
         function saveCheckinRecord(userRemark) {
             const today = formatDate(new Date(), true);
             let record =打卡记录.find(r => r.date === today && r.employeeId === currentUser.id);
@@ -758,14 +721,7 @@
         // 加载打卡数据（含员工姓名和备注）
         function loadCheckinData() {
             usernameDisplay.textContent = currentUser.name;
-            
-            // 加载本地记录
-            const savedRecords = localStorage.getItem('checkinRecords');
-            if (savedRecords) {
-                打卡记录 = JSON.parse(savedRecords);
-            } else {
-                打卡记录 = [];
-            }
+            userRemarkInput.value = ''; // 重置备注输入框
             
             // 恢复今日状态
             const today = formatDate(new Date(), true);
@@ -817,6 +773,22 @@
                 if (userRemarkMatch) {
                     userRemarkInput.value = userRemarkMatch[1];
                 }
+            } else {
+                // 重置今日状态
+                checkinStatus = {
+                    hasCheckedIn: false,
+                    hasCheckedOut: false,
+                    morningTime: null,
+                    eveningTime: null,
+                    morningRemark: "",
+                    eveningRemark: ""
+                };
+                morningCheckin.textContent = '未打卡';
+                eveningCheckout.textContent = '未打卡';
+                morningCheckin.classList.add('text-gray-400');
+                eveningCheckout.classList.add('text-gray-400');
+                morningRemark.classList.add('hidden');
+                eveningRemark.classList.add('hidden');
             }
             
             // 更新按钮状态
@@ -854,9 +826,11 @@
             }
         }
 
-        // ########################### 核心优化7：最近记录显示员工姓名和备注 ###########################
+        // 最近记录显示员工姓名和备注
         function updateRecentRecords() {
             recentRecordsEl.innerHTML = '';
+            if (!currentUser) return;
+            
             // 筛选当前员工的记录，按日期倒序，取最近5条
             const userRecords = [...打卡记录]
                 .filter(r => r.employeeId === currentUser.id)
@@ -910,9 +884,11 @@
             });
         }
 
-        // ########################### 核心优化8：历史记录显示员工姓名和备注 ###########################
+        // 历史记录显示员工姓名和备注
         function loadAllRecords() {
             allRecordsEl.innerHTML = '';
+            if (!currentUser) return;
+            
             const selectedMonth = monthSelector.value;
             const [year, month] = selectedMonth.split('-');
             // 筛选当前员工当月的记录
@@ -989,6 +965,8 @@
 
         // 更新统计（新增扣薪次数）
         function updateStats() {
+            if (!currentUser) return;
+            
             const today = new Date();
             const currentMonth = today.getMonth() + 1;
             const currentYear = today.getFullYear();
@@ -1040,6 +1018,11 @@
 
         // 导出记录（含员工姓名和备注）
         function exportRecords() {
+            if (!currentUser) {
+                showNotification('操作失败', '请先输入并确认工号', 'error');
+                return;
+            }
+            
             const selectedMonth = monthSelector.value;
             const [year, month] = selectedMonth.split('-');
             showNotification('导出成功', `已将${year}年${month}月的打卡记录（含员工姓名和备注）导出为Excel`, 'success');
@@ -1062,7 +1045,7 @@
             }
             
             notification.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
-            setTimeout(hideNotification, 4000); // 延长通知显示时间（含备注内容）
+            setTimeout(hideNotification, 4000);
         }
 
         function hideNotification() {
@@ -1071,7 +1054,7 @@
 
         // 页面切换
         function showCheckinSection() {
-            loginSection.classList.add('hidden');
+            employeeInputSection.classList.add('hidden');
             checkinSection.classList.remove('hidden');
             recordsSection.classList.add('hidden');
         }
