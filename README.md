@@ -101,7 +101,7 @@
 
     <!-- 主内容区 -->
     <main class="container mx-auto px-4 pt-24 pb-16">
-        <!-- 登录界面 -->
+        <!-- 登录界面 - 固定显示在首页 -->
         <section id="loginSection" class="max-w-md mx-auto animate-fadeIn">
             <div class="bg-white rounded-xl p-6 md:p-8 card-shadow">
                 <div class="text-center mb-6">
@@ -121,7 +121,7 @@
                             </div>
                             <input type="text" id="employeeId" name="employeeId" 
                                 class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
-                                placeholder="例如：1001 或 admin" required>
+                                placeholder="例如：250001 或 admin" required>
                             <!-- 工号匹配的姓名预览 -->
                             <p id="employeeNamePreview" class="absolute left-10 top-full mt-1 text-xs text-success hidden"></p>
                         </div>
@@ -233,7 +233,7 @@
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                             <div class="p-4 bg-blue-50 rounded-lg">
                                 <p class="text-gray-500 text-sm">应打卡天数</p>
-                                <p id="totalDays" class="text-2xl font-bold text-primary mt-1">22</p>
+                                <p id="totalDays" class="text-2xl font-bold text-primary mt-1">31</p>
                             </div>
                             <div class="p-4 bg-green-50 rounded-lg">
                                 <p class="text-gray-500 text-sm">已打卡天数</p>
@@ -360,7 +360,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div class="p-4 bg-blue-50 rounded-lg">
                         <p class="text-gray-500 text-sm">员工总数</p>
-                        <p id="adminTotalEmployees" class="text-2xl font-bold text-primary mt-1">120</p>
+                        <p id="adminTotalEmployees" class="text-2xl font-bold text-primary mt-1">0</p>
                     </div>
                     <div class="p-4 bg-green-50 rounded-lg">
                         <p class="text-gray-500 text-sm">本月总打卡次数</p>
@@ -391,7 +391,7 @@
                         </div>
                         
                         <div class="relative w-full sm:w-auto">
-                            <select id="adminEmployeeFilter" class="block w-full sm:w-48 pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary appearance-none">
+                            <select id="adminEmployeeFilter" class="block w-full sm:w-64 pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary appearance-none">
                                 <option value="all">所有员工</option>
                                 <!-- 员工选项将通过JS动态生成 -->
                             </select>
@@ -419,6 +419,7 @@
                                 <th class="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">工作时长</th>
                                 <th class="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
                                 <th class="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">备注</th>
+                                <th class="px-3 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
                             </tr>
                         </thead>
                         <tbody id="adminAllRecords" class="bg-white divide-y divide-gray-200">
@@ -435,6 +436,57 @@
             </div>
         </section>
     </main>
+
+    <!-- 编辑打卡记录的模态框 -->
+    <div id="editRecordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 w-full max-w-md mx-4 animate-fadeIn">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-800">编辑打卡记录</h3>
+                <button id="closeEditModal" class="text-gray-400 hover:text-gray-600">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="editRecordForm">
+                <input type="hidden" id="editRecordIndex">
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">员工</label>
+                    <p id="editEmployeeName" class="text-gray-800"></p>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">日期</label>
+                    <p id="editRecordDate" class="text-gray-800"></p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="editMorningTime" class="block text-sm font-medium text-gray-700 mb-1">上班时间</label>
+                        <input type="time" id="editMorningTime" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label for="editEveningTime" class="block text-sm font-medium text-gray-700 mb-1">下班时间</label>
+                        <input type="time" id="editEveningTime" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="editRemark" class="block text-sm font-medium text-gray-700 mb-1">备注</label>
+                    <textarea id="editRemark" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
+                </div>
+                
+                <div class="mt-6 flex space-x-3">
+                    <button type="button" id="cancelEditBtn" class="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg font-medium">
+                        取消
+                    </button>
+                    <button type="submit" class="flex-1 bg-primary text-white py-2 px-4 rounded-lg font-medium">
+                        保存修改
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- 页脚 -->
     <footer class="bg-white border-t border-gray-200 py-6">
@@ -470,48 +522,64 @@
             role: "admin"
         };
 
-        // 120个员工数据（工号-姓名匹配）
+        // 更新为用户提供的员工数据
         const employees = [
-            id: "250001", name: "Win Phyu Phyu Lwin" }, { id: "250004", name: "Naw Htoo Phwel Phaw" }, { id: "250007", name: "Hein Tun Soe" },
-            { id: "1004", name: "赵六" }, { id: "1005", name: "孙七" }, { id: "1006", name: "周八" },
-            { id: "1007", name: "吴九" }, { id: "1008", name: "郑十" }, { id: "1009", name: "钱一" },
-            { id: "1010", name: "冯二" }, { id: "1011", name: "陈三" }, { id: "1012", name: "褚四" },
-            { id: "1013", name: "卫五" }, { id: "1014", name: "蒋六" }, { id: "1015", name: "沈七" },
-            { id: "1016", name: "韩八" }, { id: "1017", name: "杨九" }, { id: "1018", name: "朱十" },
-            { id: "1019", name: "秦一" }, { id: "1020", name: "尤二" }, { id: "1021", name: "许三" },
-            { id: "1022", name: "何四" }, { id: "1023", name: "吕五" }, { id: "1024", name: "施六" },
-            { id: "1025", name: "张七" }, { id: "1026", name: "孔八" }, { id: "1027", name: "曹九" },
-            { id: "1028", name: "严十" }, { id: "1029", name: "华一" }, { id: "1030", name: "金二" },
-            { id: "1031", name: "魏三" }, { id: "1032", name: "陶四" }, { id: "1033", name: "姜五" },
-            { id: "1034", name: "戚六" }, { id: "1035", name: "谢七" }, { id: "1036", name: "邹八" },
-            { id: "1037", name: "喻九" }, { id: "1038", name: "柏十" }, { id: "1039", name: "水一" },
-            { id: "1040", name: "窦二" }, { id: "1041", name: "章三" }, { id: "1042", name: "云四" },
-            { id: "1043", name: "苏五" }, { id: "1044", name: "潘六" }, { id: "1045", name: "葛七" },
-            { id: "1046", name: "奚八" }, { id: "1047", name: "范九" }, { id: "1048", name: "彭十" },
-            { id: "1049", name: "郎一" }, { id: "1050", name: "鲁二" }, { id: "1051", name: "韦三" },
-            { id: "1052", name: "昌四" }, { id: "1053", name: "马五" }, { id: "1054", name: "苗六" },
-            { id: "1055", name: "凤七" }, { id: "1056", name: "花八" }, { id: "1057", name: "方九" },
-            { id: "1058", name: "俞十" }, { id: "1059", name: "任二" }, { id: "1060", name: "袁三" },
-            { id: "1061", name: "柳四" }, { id: "1062", name: "酆五" }, { id: "1063", name: "鲍六" },
-            { id: "1064", name: "史七" }, { id: "1065", name: "唐八" }, { id: "1066", name: "费九" },
-            { id: "1067", name: "廉十" }, { id: "1068", name: "岑一" }, { id: "1069", name: "薛二" },
-            { id: "1070", name: "雷三" }, { id: "1071", name: "贺四" }, { id: "1072", name: "倪五" },
-            { id: "1073", name: "汤六" }, { id: "1074", name: "滕七" }, { id: "1075", name: "殷八" },
-            { id: "1076", name: "罗九" }, { id: "1077", name: "毕十" }, { id: "1078", name: "郝一" },
-            { id: "1079", name: "邬二" }, { id: "1080", name: "安三" }, { id: "1081", name: "常四" },
-            { id: "1082", name: "乐五" }, { id: "1083", name: "于六" }, { id: "1084", name: "时七" },
-            { id: "1085", name: "傅八" }, { id: "1086", name: "皮九" }, { id: "1087", name: "卞十" },
-            { id: "1088", name: "齐一" }, { id: "1089", name: "康二" }, { id: "1090", name: "伍三" },
-            { id: "1091", name: "余四" }, { id: "1092", name: "元五" }, { id: "1093", name: "卜六" },
-            { id: "1094", name: "顾七" }, { id: "1095", name: "孟八" }, { id: "1096", name: "平九" },
-            { id: "1097", name: "黄十" }, { id: "1098", name: "和一" }, { id: "1099", name: "穆二" },
-            { id: "1100", name: "萧三" }, { id: "1101", name: "尹四" }, { id: "1102", name: "姚五" },
-            { id: "1103", name: "邵六" }, { id: "1104", name: "湛七" }, { id: "1105", name: "汪八" },
-            { id: "1106", name: "祁九" }, { id: "1107", name: "毛十" }, { id: "1108", name: "禹一" },
-            { id: "1109", name: "狄二" }, { id: "1110", name: "米三" }, { id: "1111", name: "贝四" },
-            { id: "1112", name: "明五" }, { id: "1113", name: "臧六" }, { id: "1114", name: "计七" },
-            { id: "1115", name: "伏八" }, { id: "1116", name: "成九" }, { id: "1117", name: "戴十" },
-            { id: "1118", name: "谈一" }, { id: "1119", name: "宋二" }, { id: "1120", name: "茅三" }
+            { id: "250001", name: "Win Phyu Phyu Lwin" },
+            { id: "250004", name: "Naw Htoo Phwel Phaw" },
+            { id: "250007", name: "Hein Tun Soe" },
+            { id: "250009", name: "Phyo Thiha Kyaw" },
+            { id: "250010", name: "Satt Wai" },
+            { id: "250019", name: "Chit Su Wai" },
+            { id: "250029", name: "Chit Phoo Wai" },
+            { id: "250032", name: "Myat Thiri Hlaing" },
+            { id: "250038", name: "Zwe Man Hein" },
+            { id: "250039", name: "Kaung Lwin Han" },
+            { id: "250041", name: "Min Khant Kyaw" },
+            { id: "250042", name: "Win Nandar" },
+            { id: "250043", name: "Ye Htet" },
+            { id: "250045", name: "Han Lwin Oo" },
+            { id: "250047", name: "Myo Thu Aung" },
+            { id: "250048", name: "Ye Yint" },
+            { id: "250049", name: "Yarzar Tun" },
+            { id: "250050", name: "Zwe Thiha" },
+            { id: "250051", name: "Thein Zaw" },
+            { id: "250056", name: "Aye Chan Nyi Nyi" },
+            { id: "250058", name: "Pan Pwint Phoo" },
+            { id: "250061", name: "Thiha San" },
+            { id: "250064", name: "Aung Thet Paing" },
+            { id: "250067", name: "Mei Wadi Tun" },
+            { id: "250069", name: "Zin May Oo" },
+            { id: "250070", name: "Thel Thinzar Nwe" },
+            { id: "250071", name: "Aung Kaung Myat" },
+            { id: "250072", name: "Ngwe Kyal Sin Thant" },
+            { id: "250073", name: "Aung Soe Moe" },
+            { id: "250075", name: "Hein Htet Aung" },
+            { id: "250077", name: "Hnin Ei Shwe Yee" },
+            { id: "250090", name: "Saint Nadi Tun" },
+            { id: "250092", name: "Thit Aung Khant" },
+            { id: "250093", name: "Thu Htoo Zaw" },
+            { id: "250095", name: "Shwe Phoo" },
+            { id: "250096", name: "Thura Myo Satt" },
+            { id: "250097", name: "Naing Naing Moe Oo" },
+            { id: "250098", name: "Kyaw Min Htet" },
+            { id: "250099", name: "Pyae Pyae Thein" },
+            { id: "250100", name: "Win Kay Khaing" },
+            { id: "250101", name: "Cho Yun Nwe" },
+            { id: "250103", name: "Ye Lin Aung" },
+            { id: "250104", name: "Ye Lin Phyo" },
+            { id: "250105", name: "Tayza Htun" },
+            { id: "250106", name: "Phyu Phyu Zaw" },
+            { id: "250107", name: "Phyo Phyo Nwe" },
+            { id: "250108", name: "Yamin Oo" },
+            { id: "250109", name: "Zin lin Tun" },
+            { id: "250110", name: "Yoon Nadi Aung" },
+            { id: "250112", name: "Thet Oo Aung" },
+            { id: "250113", name: "Phyo Wint Kyaw" },
+            { id: "250114", name: "May Phoo Eaindra" },
+            { id: "250115", name: "ZarNi Min Htet" },
+            { id: "250116", name: "Pyae Phyo Aung" },
+            { id: "250117", name: "Ye Lin Htut" },
+            { id: "250118", name: "Zaw Lin Htoo" }
         ];
 
         // 全局变量
@@ -574,6 +642,18 @@
         const adminTotalCheckinsEl = document.getElementById('adminTotalCheckins');
         const adminAbnormalCheckinsEl = document.getElementById('adminAbnormalCheckins');
 
+        // 编辑模态框相关元素
+        const editRecordModal = document.getElementById('editRecordModal');
+        const closeEditModal = document.getElementById('closeEditModal');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const editRecordForm = document.getElementById('editRecordForm');
+        const editRecordIndex = document.getElementById('editRecordIndex');
+        const editEmployeeName = document.getElementById('editEmployeeName');
+        const editRecordDate = document.getElementById('editRecordDate');
+        const editMorningTime = document.getElementById('editMorningTime');
+        const editEveningTime = document.getElementById('editEveningTime');
+        const editRemark = document.getElementById('editRemark');
+
         // 通知相关元素
         const notification = document.getElementById('notification');
         const notificationTitle = document.getElementById('notificationTitle');
@@ -621,6 +701,12 @@
                 }
                 showCheckinSection();
                 loadCheckinData();
+            } else {
+                // 确保未登录时显示登录页
+                loginSection.classList.remove('hidden');
+                checkinSection.classList.add('hidden');
+                personalRecordsSection.classList.add('hidden');
+                adminDashboardSection.classList.add('hidden');
             }
             
             // 事件监听
@@ -639,6 +725,11 @@
             adminExportAllBtn.addEventListener('click', exportAdminRecords);
             closeNotification.addEventListener('click', hideNotification);
             
+            // 编辑记录相关事件
+            closeEditModal.addEventListener('click', () => editRecordModal.classList.add('hidden'));
+            cancelEditBtn.addEventListener('click', () => editRecordModal.classList.add('hidden'));
+            editRecordForm.addEventListener('submit', handleSaveEdit);
+            
             // 滚动导航效果
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 10) {
@@ -656,13 +747,16 @@
                 adminEmployeeFilter.remove(1);
             }
             
-            // 添加员工选项
-            employees.forEach(emp => {
+            // 添加员工选项，按工号排序
+            employees.sort((a, b) => a.id.localeCompare(b.id)).forEach(emp => {
                 const option = document.createElement('option');
                 option.value = emp.id;
                 option.textContent = `${emp.id} - ${emp.name}`;
                 adminEmployeeFilter.appendChild(option);
             });
+            
+            // 更新员工总数统计
+            adminTotalEmployeesEl.textContent = employees.length;
         }
 
         // 初始化月份选择器
@@ -784,6 +878,7 @@
         function handleLogout() {
             localStorage.removeItem('currentUser');
             currentUser = null;
+            // 登出后固定显示登录页
             loginSection.classList.remove('hidden');
             checkinSection.classList.add('hidden');
             personalRecordsSection.classList.add('hidden');
@@ -1260,7 +1355,7 @@
             });
         }
 
-        // 管理员所有员工记录显示
+        // 管理员所有员工记录显示 - 增加编辑功能
         function loadAdminAllRecords() {
             adminAllRecordsEl.innerHTML = '';
             if (!currentUser || currentUser.role !== 'admin') return;
@@ -1296,13 +1391,13 @@
             if (filteredRecords.length === 0) {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td colspan="9" class="px-3 py-8 text-center text-gray-500">该月份暂无打卡记录</td>
+                    <td colspan="10" class="px-3 py-8 text-center text-gray-500">该月份暂无打卡记录</td>
                 `;
                 adminAllRecordsEl.appendChild(row);
                 return;
             }
             
-            filteredRecords.forEach(record => {
+            filteredRecords.forEach((record, index) => {
                 const row = document.createElement('tr');
                 // 工作时长
                 let hoursWorked = '-';
@@ -1336,6 +1431,12 @@
                     statusText = '已上班';
                 }
                 
+                // 编辑按钮
+                const recordIndex = 打卡记录.findIndex(r => 
+                    r.employeeId === record.employeeId && 
+                    r.date === record.date
+                );
+                
                 row.innerHTML = `
                     <td class="px-3 py-4 whitespace-nowrap">${record.employeeId}</td>
                     <td class="px-3 py-4 whitespace-nowrap">${record.employeeName}</td>
@@ -1348,9 +1449,91 @@
                     <td class="px-3 py-4 whitespace-nowrap text-sm ${record.remark.includes('扣') || record.remark.includes('早退') ? 'text-danger' : record.remark.includes('迟到') ? 'text-warning' : 'text-gray-600'}">
                         ${record.remark}
                     </td>
+                    <td class="px-3 py-4 whitespace-nowrap">
+                        <button class="edit-record-btn text-primary hover:text-primary/80" data-index="${recordIndex}">
+                            <i class="fa fa-edit"></i> 编辑
+                        </button>
+                    </td>
                 `;
                 adminAllRecordsEl.appendChild(row);
             });
+            
+            // 为编辑按钮添加事件监听
+            document.querySelectorAll('.edit-record-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = parseInt(e.currentTarget.getAttribute('data-index'));
+                    openEditModal(index);
+                });
+            });
+        }
+
+        // 打开编辑模态框
+        function openEditModal(index) {
+            const record = 打卡记录[index];
+            if (!record) return;
+            
+            // 填充表单数据
+            editRecordIndex.value = index;
+            editEmployeeName.textContent = `${record.employeeId} - ${record.employeeName}`;
+            editRecordDate.textContent = record.date;
+            editMorningTime.value = record.morning ? record.morning.slice(0, 5) : '';
+            editEveningTime.value = record.evening ? record.evening.slice(0, 5) : '';
+            editRemark.value = record.remark;
+            
+            // 显示模态框
+            editRecordModal.classList.remove('hidden');
+        }
+
+        // 保存编辑的记录
+        function handleSaveEdit(e) {
+            e.preventDefault();
+            const index = parseInt(editRecordIndex.value);
+            if (isNaN(index) || index < 0 || index >= 打卡记录.length) return;
+            
+            // 获取表单数据
+            const morningTime = editMorningTime.value ? `${editMorningTime.value}:00` : '';
+            const eveningTime = editEveningTime.value ? `${editEveningTime.value}:00` : '';
+            const remark = editRemark.value.trim();
+            
+            // 更新记录
+            const record = 打卡记录[index];
+            record.morning = morningTime;
+            record.evening = eveningTime;
+            record.remark = remark;
+            
+            // 重新计算状态
+            const hasCheckedIn = !!morningTime;
+            const hasCheckedOut = !!eveningTime;
+            
+            // 简单的状态计算
+            let status = '未打卡';
+            if (hasCheckedIn && hasCheckedOut) {
+                if (remark.includes('扣半天工资')) {
+                    status = '严重迟到';
+                } else if (remark.includes('早退')) {
+                    status = '早退';
+                } else if (remark.includes('迟到')) {
+                    status = '迟到';
+                } else {
+                    status = '正常';
+                }
+            } else if (hasCheckedIn) {
+                status = '已上班';
+            }
+            record.status = status;
+            
+            // 保存到本地存储
+            localStorage.setItem('checkinRecords', JSON.stringify(打卡记录));
+            
+            // 关闭模态框
+            editRecordModal.classList.add('hidden');
+            
+            // 更新界面
+            loadAdminAllRecords();
+            updateAdminStats();
+            updateRecentRecords();
+            
+            showNotification('修改成功', '打卡记录已更新', 'success');
         }
 
         // 更新管理员统计数据
@@ -1410,13 +1593,63 @@
             salaryDeductCountEl.textContent = salaryDeductCount;
         }
 
-        // 导出个人记录
+        // 导出个人记录 - 实际项目中会发送到服务器生成Excel文件并下载
         function exportPersonalRecords() {
             if (!currentUser || currentUser.role === 'admin') return;
             
             const selectedMonth = personalMonthSelector.value;
             const [year, month] = selectedMonth.split('-');
-            showNotification('导出成功', `已将${year}年${month}月的个人打卡记录导出为Excel`, 'success');
+            
+            // 创建导出数据
+            const exportData = [
+                ["员工姓名", "日期", "星期", "上班时间", "下班时间", "工作时长", "状态", "备注"]
+            ];
+            
+            // 收集数据
+            const userMonthlyRecords = [...打卡记录]
+                .filter(r => {
+                    if (r.employeeId !== currentUser.id) return false;
+                    const recordDate = new Date(r.date);
+                    return recordDate.getFullYear() === parseInt(year) && 
+                           recordDate.getMonth() + 1 === parseInt(month);
+                })
+                .sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            // 格式化数据
+            userMonthlyRecords.forEach(record => {
+                let hoursWorked = '-';
+                if (record.morning && record.evening) {
+                    const dateStr = record.date;
+                    const morning = new Date(`${dateStr} ${record.morning}`);
+                    const evening = new Date(`${dateStr} ${record.evening}`);
+                    const hours = ((evening - morning) / (1000 * 60 * 60)).toFixed(1);
+                    hoursWorked = `${hours}小时`;
+                }
+                
+                exportData.push([
+                    record.employeeName,
+                    record.date,
+                    record.weekday,
+                    record.morning || '-',
+                    record.evening || '-',
+                    hoursWorked,
+                    record.status,
+                    record.remark
+                ]);
+            });
+            
+            // 模拟导出（实际项目中会使用如SheetJS库生成Excel文件）
+            const blob = new Blob([convertToCSV(exportData)], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `${currentUser.name}_${year}${month}_打卡记录.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('导出成功', `已将${year}年${month}月的个人打卡记录导出`, 'success');
         }
 
         // 导出管理员记录（所有员工）
@@ -1427,6 +1660,70 @@
             const selectedEmployee = adminEmployeeFilter.value;
             const [year, month] = selectedMonth.split('-');
             
+            // 创建导出数据
+            const exportData = [
+                ["工号", "员工姓名", "日期", "星期", "上班时间", "下班时间", "工作时长", "状态", "备注"]
+            ];
+            
+            // 筛选记录
+            let filteredRecords = [...打卡记录]
+                .filter(r => {
+                    // 员工筛选
+                    if (selectedEmployee !== 'all' && r.employeeId !== selectedEmployee) {
+                        return false;
+                    }
+                    
+                    // 月份筛选
+                    const recordDate = new Date(r.date);
+                    return recordDate.getFullYear() === parseInt(year) && 
+                           recordDate.getMonth() + 1 === parseInt(month);
+                })
+                .sort((a, b) => {
+                    if (a.employeeId !== b.employeeId) {
+                        return a.employeeId.localeCompare(b.employeeId);
+                    }
+                    return new Date(a.date) - new Date(b.date);
+                });
+            
+            // 格式化数据
+            filteredRecords.forEach(record => {
+                let hoursWorked = '-';
+                if (record.morning && record.evening) {
+                    const dateStr = record.date;
+                    const morning = new Date(`${dateStr} ${record.morning}`);
+                    const evening = new Date(`${dateStr} ${record.evening}`);
+                    const hours = ((evening - morning) / (1000 * 60 * 60)).toFixed(1);
+                    hoursWorked = `${hours}小时`;
+                }
+                
+                exportData.push([
+                    record.employeeId,
+                    record.employeeName,
+                    record.date,
+                    record.weekday,
+                    record.morning || '-',
+                    record.evening || '-',
+                    hoursWorked,
+                    record.status,
+                    record.remark
+                ]);
+            });
+            
+            // 模拟导出
+            const fileName = selectedEmployee === 'all' 
+                ? `${year}${month}_所有员工打卡记录.csv` 
+                : `${employees.find(e => e.id === selectedEmployee)?.name || '员工'}_${year}${month}_打卡记录.csv`;
+                
+            const blob = new Blob([convertToCSV(exportData)], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', fileName);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
             let exportMsg = `${year}年${month}月的`;
             if (selectedEmployee === 'all') {
                 exportMsg += '所有员工打卡记录';
@@ -1435,7 +1732,20 @@
                 exportMsg += `${emp.name}的打卡记录`;
             }
             
-            showNotification('导出成功', `已将${exportMsg}导出为Excel`, 'success');
+            showNotification('导出成功', `已将${exportMsg}导出`, 'success');
+        }
+
+        // 辅助函数：将数据转换为CSV格式
+        function convertToCSV(arr) {
+            return arr.map(row => 
+                row.map(field => {
+                    // 处理包含逗号或引号的字段
+                    if (typeof field === 'string' && (field.includes(',') || field.includes('"'))) {
+                        return `"${field.replace(/"/g, '""')}"`;
+                    }
+                    return field;
+                }).join(',')
+            ).join('\n');
         }
 
         // 通知功能
@@ -1462,7 +1772,7 @@
             notification.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
         }
 
-        // 页面切换
+        // 页面切换 - 确保登录页固定为首页
         function showCheckinSection() {
             loginSection.classList.add('hidden');
             checkinSection.classList.remove('hidden');
