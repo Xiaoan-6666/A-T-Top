@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A&TTop Co.Ltd employee clock-in system</title>
+    <title>A&TTop Co.Ltd Employee clock-in system</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     
@@ -33,6 +33,9 @@
             .radio-active {
                 @apply bg-primary text-white border-primary;
             }
+            .modal-backdrop {
+                backdrop-filter: blur(3px);
+            }
         }
     </style>
 </head>
@@ -42,8 +45,8 @@
         <div id="checkinPanel" class="bg-white rounded-xl p-6 md:p-8 card-shadow transition-all duration-300 hover:shadow-lg mb-6">
             <div class="text-center mb-6">
                 <i class="fa fa-clock-o text-primary text-4xl mb-4"></i>
-                <h1 class="text-2xl font-bold text-gray-800">A&TTop Co.Ltd employee clock-in system</h1>
-                <p class="text-gray-500 mt-2">Please select the punch card type and enter the ID No</p>
+                <h1 class="text-2xl font-bold text-gray-800">A&TTop Co.Ltd Employee clock-in system</h1>
+                <p class="text-gray-500 mt-2">Please select the punch card type and enter the ID No.</p>
             </div>
             
             <form id="checkinForm" class="space-y-6">
@@ -73,7 +76,7 @@
                             >
                             <div class="peer-checked:radio-active border-2 border-gray-200 rounded-lg p-4 text-center transition-all duration-200">
                                 <i class="fa fa-sign-out text-xl mb-2"></i>
-                                <span class="block font-medium">Get Off Work</span>
+                                <span class="block font-medium">Get off work</span>
                             </div>
                         </label>
                     </div>
@@ -90,7 +93,7 @@
                             type="text" 
                             id="employeeId" 
                             name="employeeId" 
-                            placeholder="For example: 250001" 
+                            placeholder="例如: 250001" 
                             class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                             required
                         >
@@ -100,7 +103,7 @@
                 <!-- 员工信息显示 -->
                 <div id="employeeInfo" class="hidden">
                     <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                        <h3 class="text-sm font-medium text-gray-700 mb-2">员工信息</h3>
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">Employee information</h3>
                         <div class="flex justify-between items-center">
                             <span class="text-gray-600">Name:</span>
                             <span id="employeeName" class="font-medium text-gray-900"></span>
@@ -117,7 +120,7 @@
                     type="submit" 
                     class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center"
                 >
-                    <i class="fa fa-check mr-2"></i> 确认打卡
+                    <i class="fa fa-check mr-2"></i> Confirm punch in
                 </button>
             </form>
             
@@ -216,6 +219,7 @@
                                 <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                                 <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">上班时间</th>
                                 <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">下班时间</th>
+                                <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
                             </tr>
                         </thead>
                         <tbody id="adminRecordsTable" class="bg-white divide-y divide-gray-200">
@@ -223,6 +227,67 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+        
+        <!-- 修改时间弹窗 (默认隐藏) -->
+        <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 transform transition-all">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium text-gray-900">修改打卡时间</h3>
+                    <button id="closeModalBtn" class="text-gray-400 hover:text-gray-500">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                
+                <form id="editForm">
+                    <input type="hidden" id="editRecordIndex">
+                    <input type="hidden" id="editRecordType">
+                    
+                    <div class="mb-4">
+                        <label for="editEmployeeInfo" class="block text-sm font-medium text-gray-700 mb-1">员工信息</label>
+                        <div class="p-2 bg-gray-50 rounded border border-gray-200">
+                            <span id="editEmployeeInfo" class="text-sm"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="editDate" class="block text-sm font-medium text-gray-700 mb-1">日期</label>
+                        <input 
+                            type="date" 
+                            id="editDate" 
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="editTime" class="block text-sm font-medium text-gray-700 mb-1">时间</label>
+                        <input 
+                            type="time" 
+                            id="editTime" 
+                            step="1"
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button 
+                            type="button" 
+                            id="cancelEditBtn"
+                            class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-all duration-300"
+                        >
+                            取消
+                        </button>
+                        <button 
+                            type="submit" 
+                            class="flex-1 bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300"
+                        >
+                            保存修改
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
         
@@ -352,6 +417,17 @@
         const notificationTitle = document.getElementById('notificationTitle');
         const notificationMessage = document.getElementById('notificationMessage');
         
+        // 修改时间弹窗元素
+        const editModal = document.getElementById('editModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const editForm = document.getElementById('editForm');
+        const editRecordIndex = document.getElementById('editRecordIndex');
+        const editRecordType = document.getElementById('editRecordType');
+        const editEmployeeInfo = document.getElementById('editEmployeeInfo');
+        const editDate = document.getElementById('editDate');
+        const editTime = document.getElementById('editTime');
+        
         // 初始化页面
         document.addEventListener('DOMContentLoaded', function() {
             // 设置默认筛选日期为今天
@@ -366,7 +442,100 @@
             
             // 更新管理员记录显示
             updateAdminRecords();
+            
+            // 绑定弹窗事件
+            bindModalEvents();
         });
+        
+        // 绑定弹窗相关事件
+        function bindModalEvents() {
+            // 关闭弹窗
+            closeModalBtn.addEventListener('click', closeEditModal);
+            cancelEditBtn.addEventListener('click', closeEditModal);
+            
+            // 点击弹窗外部关闭
+            editModal.addEventListener('click', function(e) {
+                if (e.target === editModal) {
+                    closeEditModal();
+                }
+            });
+            
+            // 提交修改
+            editForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveEditedRecord();
+            });
+        }
+        
+        // 打开修改弹窗
+        function openEditModal(recordIndex, recordType) {
+            const record = checkRecords[recordIndex];
+            if (!record) return;
+            
+            // 填充表单数据
+            editRecordIndex.value = recordIndex;
+            editRecordType.value = recordType;
+            editEmployeeInfo.textContent = `${record.name} (${record.id}) - ${record.typeText}打卡`;
+            
+            // 解析日期和时间
+            const recordDate = new Date(record.date);
+            editDate.value = recordDate.toISOString().split('T')[0];
+            
+            // 格式化时间为HH:MM:SS
+            const hours = String(recordDate.getHours()).padStart(2, '0');
+            const minutes = String(recordDate.getMinutes()).padStart(2, '0');
+            const seconds = String(recordDate.getSeconds()).padStart(2, '0');
+            editTime.value = `${hours}:${minutes}:${seconds}`;
+            
+            // 显示弹窗
+            editModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // 防止背景滚动
+        }
+        
+        // 关闭修改弹窗
+        function closeEditModal() {
+            editModal.classList.add('hidden');
+            document.body.style.overflow = ''; // 恢复背景滚动
+        }
+        
+        // 保存修改后的记录
+        function saveEditedRecord() {
+            const recordIndex = parseInt(editRecordIndex.value);
+            const record = checkRecords[recordIndex];
+            
+            if (!record) {
+                showNotification('错误', '找不到要修改的记录', 'error');
+                closeEditModal();
+                return;
+            }
+            
+            // 获取新的日期和时间
+            const newDate = editDate.value;
+            const newTime = editTime.value;
+            
+            if (!newDate || !newTime) {
+                showNotification('错误', '请填写完整的日期和时间', 'error');
+                return;
+            }
+            
+            // 合并日期和时间
+            const newDateTime = new Date(`${newDate}T${newTime}`);
+            
+            // 更新记录
+            record.date = newDateTime.toISOString();
+            record.time = newDateTime.toLocaleTimeString();
+            
+            // 保存到本地存储
+            localStorage.setItem('checkRecords', JSON.stringify(checkRecords));
+            
+            // 更新显示
+            updateCheckRecords();
+            updateAdminRecords();
+            
+            // 关闭弹窗并显示成功消息
+            closeEditModal();
+            showNotification('成功', '打卡时间已更新', 'success');
+        }
         
         // 初始化员工筛选下拉框
         function initEmployeeFilter() {
@@ -399,7 +568,7 @@
             
             const empId = employeeIdInput.value.trim();
             const checkType = document.querySelector('input[name="checkType"]:checked').value;
-            const checkTypeText = checkType === 'checkin' ? 'Work Time' : 'Get Off Work Time';
+            const checkTypeText = checkType === 'checkin' ? '上班' : '下班';
             
             // 验证ID No
             if (!empId) {
@@ -614,7 +783,7 @@
             if (filteredRecords.length === 0) {
                 const emptyRow = document.createElement('tr');
                 emptyRow.innerHTML = `
-                    <td colspan="5" class="px-4 py-8 text-center text-gray-500">
+                    <td colspan="6" class="px-4 py-8 text-center text-gray-500">
                         没有找到匹配的打卡记录
                     </td>
                 `;
@@ -624,8 +793,9 @@
             
             // 按员工和日期分组
             const groupedRecords = {};
+            const recordMap = {}; // 用于存储原始记录索引，便于修改
             
-            filteredRecords.forEach(record => {
+            filteredRecords.forEach((record, index) => {
                 const date = new Date(record.date).toLocaleDateString();
                 const key = `${record.id}-${date}`;
                 
@@ -635,14 +805,18 @@
                         id: record.id,
                         name: record.name,
                         checkin: '',
-                        checkout: ''
+                        checkout: '',
+                        checkinIndex: -1,
+                        checkoutIndex: -1
                     };
                 }
                 
                 if (record.type === 'checkin') {
                     groupedRecords[key].checkin = record.time;
+                    groupedRecords[key].checkinIndex = checkRecords.indexOf(record);
                 } else {
                     groupedRecords[key].checkout = record.time;
+                    groupedRecords[key].checkoutIndex = checkRecords.indexOf(record);
                 }
             });
             
@@ -650,12 +824,34 @@
             Object.values(groupedRecords).forEach(record => {
                 const row = document.createElement('tr');
                 row.className = 'hover:bg-gray-50 transition-colors';
+                
+                // 生成修改按钮
+                const checkinEditBtn = record.checkinIndex !== -1 ? 
+                    `<button onclick="openEditModal(${record.checkinIndex}, 'checkin')" class="text-primary hover:text-primary/80 text-sm">
+                        <i class="fa fa-pencil mr-1"></i>修改
+                    </button>` : '';
+                    
+                const checkoutEditBtn = record.checkoutIndex !== -1 ? 
+                    `<button onclick="openEditModal(${record.checkoutIndex}, 'checkout')" class="text-primary hover:text-primary/80 text-sm">
+                        <i class="fa fa-pencil mr-1"></i>修改
+                    </button>` : '';
+                
                 row.innerHTML = `
                     <td class="px-4 py-3 whitespace-nowrap">${record.date}</td>
                     <td class="px-4 py-3 whitespace-nowrap">${record.id}</td>
                     <td class="px-4 py-3 whitespace-nowrap">${record.name}</td>
-                    <td class="px-4 py-3 whitespace-nowrap ${record.checkin ? '' : 'text-gray-400'}">${record.checkin || '未打卡'}</td>
-                    <td class="px-4 py-3 whitespace-nowrap ${record.checkout ? '' : 'text-gray-400'}">${record.checkout || '未打卡'}</td>
+                    <td class="px-4 py-3 whitespace-nowrap ${record.checkin ? '' : 'text-gray-400'}">
+                        ${record.checkin || '未打卡'}
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap ${record.checkout ? '' : 'text-gray-400'}">
+                        ${record.checkout || '未打卡'}
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <div class="flex space-x-2">
+                            <div>${checkinEditBtn}</div>
+                            <div>${checkoutEditBtn}</div>
+                        </div>
+                    </td>
                 `;
                 adminRecordsTable.appendChild(row);
             });
@@ -699,6 +895,9 @@
                 notification.classList.add('translate-y-4', 'opacity-0');
             }, 3000);
         }
+        
+        // 暴露给全局，供HTML中的onclick调用
+        window.openEditModal = openEditModal;
     </script>
 </body>
 </html>
