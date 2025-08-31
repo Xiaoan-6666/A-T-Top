@@ -199,7 +199,7 @@
                             </div>
                             <input type="text" id="employeeId" name="employeeId" 
                                 class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg input-focus"
-                                placeholder="ID No：250001 or admin" required>
+                                placeholder="例如：250001 或 admin" required>
                             <!-- 工号匹配的姓名预览 - 优化显示位置 -->
                             <p id="employeeNamePreview" class="absolute left-10 top-full mt-1 text-xs text-success hidden animate-fadeIn"></p>
                         </div>
@@ -217,7 +217,7 @@
                             </div>
                             <input type="password" id="password" name="password" 
                                 class="block w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg input-focus"
-                                placeholder="default password：123456" required>
+                                placeholder="默认密码：123456" required>
                             <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors">
                                 <i class="fa fa-eye-slash"></i>
                             </button>
@@ -1301,4 +1301,4 @@
                 const earlyMinutes = normalStart - totalMinutes;
                 return { status: 'earlyLeave', remark: `早退${earlyMinutes}分钟` };
             }
-        
+        }
