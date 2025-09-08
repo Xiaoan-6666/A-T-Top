@@ -64,7 +64,7 @@
                             >
                             <div class="peer-checked:radio-active border-2 border-gray-200 rounded-lg p-4 text-center transition-all duration-200">
                                 <i class="fa fa-sign-in text-xl mb-2"></i>
-                                <span class="block font-medium">Clock in at work</span>
+                                <span class="block font-medium">ရုံးတက် </span>
                             </div>
                         </label>
                         <label class="flex-1 cursor-pointer">
@@ -76,7 +76,7 @@
                             >
                             <div class="peer-checked:radio-active border-2 border-gray-200 rounded-lg p-4 text-center transition-all duration-200">
                                 <i class="fa fa-sign-out text-xl mb-2"></i>
-                                <span class="block font-medium">Get off work</span>
+                                <span class="block font-medium">ရုံးဆင်း</span>
                             </div>
                         </label>
                     </div>
@@ -365,21 +365,21 @@
             '250118': { name: 'Zaw Lin Htoo' },
             
             // 额外40个空ID占位符（ID号延续原有序列）
-            '250119': { name: '' },
-            '250120': { name: '' },
+            '250119': { name: 'May Nyein Chan Aung' },
+            '250120': { name: 'Shwe Sin Ei' },
             '250121': { name: '' },
-            '250122': { name: '' },
-            '250123': { name: '' },
-            '250124': { name: '' },
-            '250125': { name: '' },
-            '250126': { name: '' },
-            '250127': { name: '' },
-            '250128': { name: '' },
+            '250122': { name: 'Kay Thi Kyaw' },
+            '250123': { name: 'Hanni Kyaw' },
+            '250124': { name: 'Hnin Khat Wai' },
+            '250125': { name: 'Phyo Wai Nyein' },
+            '250126': { name: 'Aung Phyo Thant' },
+            '250127': { name: 'Moe Nyein Aye' },
+            '250128': { name: 'Pyae Phyo Aung' },
             '250129': { name: '' },
-            '250130': { name: '' },
-            '250131': { name: '' },
-            '250132': { name: '' },
-            '250133': { name: '' },
+            '250130': { name: 'Shwe Sin Oo' },
+            '250131': { name: 'La Pyae Win' },
+            '250132': { name: 'San Myint Oo' },
+            '250133': { name: 'Htoo Aung Hlaing' },
             '250134': { name: '' },
             '250135': { name: '' },
             '250136': { name: '' },
